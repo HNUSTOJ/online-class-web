@@ -26,8 +26,8 @@ export default {
       height: 240,
       min_height: 240,
       max_height: 300,
-      toolbar: 'newdocument | bold italic | bullist numlist | code codesample link | emoticons image table | hr undo redo | preview',
-      plugins: 'hr lists code codesample link emoticons image imagetools table preview',
+      toolbar: 'newdocument | bold italic forecolor | bullist numlist | code codesample link | emoticons image table | hr undo redo | preview',
+      plugins: 'hr lists code codesample link emoticons image imagetools table preview textcolor',
       setup: function(editor) {
         editor.on('click', function(e) {
           console.log(editor.getContent());

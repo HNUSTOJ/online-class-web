@@ -9,17 +9,17 @@
       </el-breadcrumb>
     </div>
 
-    <el-dropdown style="width: 150px; cursor: pointer; text-align: right">
-      <div style="display: inline-block">
-        <span>王小虎</span>
-        <i class="el-icon-arrow-down" style="margin-left: 5px"></i>
-      </div>
+    <el-dropdown style="width: 150px; cursor: pointer; text-align: right" trigger="click">
+<!--      <div style="display: inline-block">-->
+<!--        <span>{{ username }}</span>-->
+<!--        <i class="el-icon-arrow-down" style="margin-left: 5px"></i>-->
+<!--      </div>-->
+      <span class="el-dropdown-link">
+        {{ username }}<i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
       <el-dropdown-menu slot="dropdown" style="width: 100px; text-align: center">
-<!--        <el-dropdown-item style="font-size: 14px; padding: 5px 0">-->
-<!--          <span style="text-decoration: none" @click="info">个人信息</span>-->
-<!--        </el-dropdown-item>-->
         <el-dropdown-item style="font-size: 14px; padding: 10px 0">
-          <span style="text-decoration: none" @click="logout">退出账号</span>
+          <span style="text-decoration: none" @click="logout">退 出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
   name: "Header",
   props: {
@@ -40,12 +42,17 @@ export default {
       this.currentPathName = localStorage.getItem("currentPathName")
     }
   },
+  computed:{
+    ...mapGetters({
+      username:'loginStore/username'
+    })
+  },
   created() {
     this.currentPathName = localStorage.getItem("currentPathName")
   },
   data() {
     return {
-      currentPathName: ''
+      currentPathName: '',
     }
   },
   methods: {
@@ -53,10 +60,9 @@ export default {
       this.$emit("asideCollapse")
     },
     logout() {
-      this.$message.success("退出成功")
-    },
-    info(){
-      this.$router.push("/info")
+      this.$router.push({name:'Home'})
+      localStorage.clear()
+      location.reload()
     }
   }
 }

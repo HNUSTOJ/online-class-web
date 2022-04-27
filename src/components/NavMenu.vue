@@ -2,19 +2,20 @@
   <div class="container-div">
     <div style="width: 50%">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="'/'">首页</el-breadcrumb-item>
+        <el-breadcrumb-item :to="'/'">首 页</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
-    <span class="container-span">欢迎来到湖南科技大学教学课堂</span>
+    <span class="container-span">湖南科技大学在线实训课堂</span>
 
     <el-dropdown>
       <div style="display: inline-block">
-        <span>登录</span>
+        <span v-if="isLogin">{{ username }}</span>
+        <span v-else>登 录</span>
         <i class="el-icon-arrow-down" style="margin-left: 5px"></i>
       </div>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item style="padding: 5px 0">
+        <el-dropdown-item style="padding: 5px 0" v-if="!isLogin">
           <span class="el-dropdown-item-span" @click="login">登 录</span>
         </el-dropdown-item>
         <el-dropdown-item style="padding: 5px 0">
@@ -27,14 +28,28 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
   name: "NavMenu",
+  data(){
+    return{
+    }
+  },
+  computed:{
+    ...mapGetters({
+      username:'loginStore/username',
+      isLogin:'loginStore/isLogin'
+    })
+  },
   methods: {
     logout() {
-      this.$message.success("退出成功")
+      this.$router.push({name:'Home'})
+      localStorage.clear()
+      location.reload()
     },
     login(){
-      this.$router.push("/login")
+      this.$store.commit('loginStore/triggerLogin')
     }
   }
 }
@@ -68,3 +83,5 @@ export default {
   font-size: 15px;
 }
 </style>
+
+

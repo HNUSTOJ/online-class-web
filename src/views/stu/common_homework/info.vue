@@ -55,7 +55,7 @@
 import router from "@/router";
 
 export default {
-  name: "common-homework-stuDetail",
+  name: "info",
   data(){
     return{
       total: 0,
@@ -91,10 +91,9 @@ export default {
   },
   methods:{
     goBack(){
-      router.push("/common_homework_stu")
+      this.$router.push({ name: 'common_homework_stu'})
     },
     handleClick(tab, event) {
-      router.push({ path: '/common_homework_stu/detail', query: { tab: tab.name } })
     },
     handleSizeChange(pageSize){
       this.pageSize=pageSize

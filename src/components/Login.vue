@@ -1,64 +1,76 @@
 <template>
-  <div class="wrapper">
-    <div
-        style="margin: 200px auto; background-color: #fff; width: 350px; height: 300px; padding: 20px; border-radius: 10px">
-      <div style="margin: 20px 0; text-align: center; font-size: 24px"><b>登 录</b></div>
-      <el-form :model="user" :rules="rules" ref="userForm">
+  <el-dialog :visible.sync="visibleLogin" width="30%" :before-close="close">
+    <div style="margin: 5px auto; background-color: #fff; border-radius: 10px">
+      <div style="margin: 10px 0; text-align: center; font-size: 24px"><b>登 录</b></div>
+      <el-form :model="loginForm" :rules="rules" ref="loginForm">
         <el-form-item prop="userId">
-          <el-input size="medium" style="margin: 10px 0" prefix-icon="el-icon-user" v-model="user.userId" placeholder="用户名(学号)"></el-input>
+          <el-input size="medium" style="margin: 10px 0" prefix-icon="el-icon-user"
+                    v-model="loginForm.userId" placeholder="用户名(学号)"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input size="medium" style="margin: 10px 0" prefix-icon="el-icon-lock" show-password
-                    v-model="user.password" placeholder="密码"></el-input>
+                    v-model="loginForm.password" placeholder="密码"></el-input>
         </el-form-item>
         <el-form-item style="margin: 10px 0; text-align: right">
-<!--          <el-button type="warning" size="small" autocomplete="off" @click="$router.push('/register')">注册</el-button>-->
-          <el-button type="primary" size="small" autocomplete="off" @click="login">登录</el-button>
+          <el-button type="primary" size="medium" style="width: 100%" autocomplete="off" @click="login">登录</el-button>
         </el-form-item>
       </el-form>
     </div>
-  </div>
+  </el-dialog>
 </template>
 
 <script>
-
-import request from "@/utils/request";
+import {mapGetters} from "vuex";
+import hex_md5 from "@/utils/md5-min"
 
 export default {
   name: 'Login',
+  computed:{
+    ...mapGetters({
+      token: 'loginStore/token',
+      username: 'loginStore/username',
+      visibleLogin:'loginStore/loginDialog'
+    }),
+  },
   data () {
     return {
       loginForm: {
-        userId: '',
-        password: ''
+        userId: '1855010216',
+        password: '4315853'
       },
-      responseResult: [],
-      user: {},
       rules: {
         userId: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 3, max: 10, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+          {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur'}
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 3, max: 50, message: '长度在 3 到 20 个字符', trigger: 'blur'}
+          {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur'}
         ],
       }
     }
   },
   methods: {
+    jsMd5(){
+      this.loginForm.password = hex_md5(this.loginForm.password);
+    },
     login () {
-      this.$refs['userForm'].validate((valid) => {
-        // if (valid) {  // 表单校验合法
-        //   this.request.post("/user/login", this.user).then(res => {
-        //     if (res.code === '200') {
-        //       this.$router.push("/")
-        //     } else {
-        //       this.$message.error(res.msg)
-        //     }
-        //   })
-        // }
+      this.$refs['loginForm'].validate((valid) => {
+        if(valid){
+          this.jsMd5();
+          this.$store.dispatch('loginStore/postLogin',this.loginForm).then(res=>{
+            if(res.code === 200){
+              location.reload()
+              this.$message.success(res.msg)
+            }else{
+              this.$message.error(res.msg)
+            }
+          });
+        }
       });
+    },
+    close(){
+      this.$store.commit('loginStore/triggerLogin')
     }
   }
 }

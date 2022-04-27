@@ -37,10 +37,9 @@
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-sizes="[2, 5, 15, 20]"
+            :current-page.sync="pageNum"
             :page-size="pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
+            layout="prev, pager, next, jumper"
             :total="total">
         </el-pagination>
       </div>
@@ -81,7 +80,7 @@ export default {
         {id:'4',name: '张三',num: '1855010216',state:'已签到'},
         {id:'5',name: '张三',num: '1855010216',state:'已签到'},
       ],
-      total: 0,
+      total: 10,
       pageNum: 1,
       pageSize: 2,
       classname: "",
@@ -90,7 +89,8 @@ export default {
   },
   methods:{
     goBack() {
-      router.push("/attendance")
+      //router.push("/attendance")
+      this.$router.push({name: 'attendance'})
     },
     load(){
       request.get("http://localhost:8443/user/page",{

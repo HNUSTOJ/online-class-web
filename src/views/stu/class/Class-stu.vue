@@ -16,7 +16,9 @@
     <el-table-column prop="stunum" label="学生成员" width="100" align="center"></el-table-column>
     <el-table-column prop="teacher" label="管理教师" align="center"></el-table-column>
     <el-table-column label="你所在的分班" align="center">
-      <i class="el-icon-check"></i>
+      <template slot-scope="scope">
+        <i v-if="scope.row.id === inclass" class="el-icon-check"></i>
+      </template>
     </el-table-column>
     <el-table-column label="操作" width="300" align="center">
       <template>
@@ -28,10 +30,9 @@
     <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="pageNum"
-        :page-sizes="[2, 5, 15, 20]"
+        :current-page.sync="pageNum"
         :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="prev, pager, next, jumper"
         :total="total">
     </el-pagination>
   </div>
@@ -55,11 +56,12 @@ export default {
         {id:'5',classname: '18计算机二班',stunum: '30',teacher:'谢沅峰'},
       ],
       username:'',
-      total: 0,
+      total: 10,
       pageNum: 1,
       pageSize: 2,
       classname: "",
-      headerBg: 'headerBg'
+      headerBg: 'headerBg',
+      inclass: '3'
     }
   },
   methods:{
@@ -85,12 +87,12 @@ export default {
       this.load()
     },
     detail(){
-      router.push("/class_stu/detail")
+      this.$router.push({name:'class-stu-info',params:{cid:'123'}})
     },
     judge({ row, column, rowIndex, columnIndex }) {
-      if (row.id === this.sign && columnIndex === 4) {
-        return 'color: #0CB618;font-size:25px';
-      }
+      // if (row.id === this.sign && columnIndex === 4) {
+      //   return 'color: #0CB618;font-size:25px';
+      // }
     }
   }
 }
@@ -106,5 +108,9 @@ export default {
 .el-card-div{
   display: flex;
   justify-content: space-between;
+}
+i{
+  color: #0CB618;
+  font-size:25px
 }
 </style>

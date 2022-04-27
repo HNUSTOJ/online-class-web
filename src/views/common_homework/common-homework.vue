@@ -1,113 +1,113 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-      <div class="loginOut">
+    <div style="padding: 10px 0;display: flex;justify-content: space-between">
+      <div>
+        <el-input style="width: 200px" placeholder="请输入名称进行搜索" suffix-icon="el-icon-search" v-model="classname"></el-input>
+        <el-button style="margin-left: 5px" type="primary" @click="">搜索</el-button>
+      </div>
+      <div>
         <el-button type="text" icon="el-icon-plus" @click="createHw" style="font-size: 14px">创建作业</el-button>
       </div>
-      <el-tab-pane label="全部" name="0">
-        <div v-if="attendanceData.length">
-          <div v-for="item in attendanceData">
-            <el-card shadow="hover" style="cursor: pointer;margin: 10px 0">
-              <div style="float: left;margin: 10px 0;width: 70%">
-                <div>
-                  <span>{{ item.cname }}</span>
-                  <el-tag type="success" style="border-radius: 10px;margin-left: 5px">进行中</el-tag>
-                </div>
-                <div style="margin: 15px 0">
-                  <span style="font-size: small">{{item.tname}}</span>
-                  <span style="font-size: small;margin-left: 4%">未提交:{{item.num}}人</span>
-                  <span style="font-size: small;margin-left: 4%">发布时间:{{item.createTime}}</span>
-                  <span style="font-size: small;margin-left: 2%">截止时间:{{item.limitTime}}</span>
-                </div>
-              </div>
-              <div style="float: right">
-                <el-dropdown @command="handleCommand">
-                  <span class="el-dropdown-link">
-                    更多<i class="el-icon-arrow-down el-icon--right"></i>
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="a">作业详情</el-dropdown-item>
-                    <el-dropdown-item command="b">立即截止</el-dropdown-item>
-                    <el-dropdown-item command="b">删除作业</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </div>
-            </el-card>
-          </div>
-        </div>
-        <div v-else>
-          <el-empty :image-size="300"></el-empty>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="进行中" name="1">
-        <div class="loginOut">
-          <el-button type="text" icon="el-icon-plus" @click="createHw" style="font-size: 14px">创建作业</el-button>
-        </div>
-        <el-empty :image-size="300"></el-empty>
-      </el-tab-pane>
-      <el-tab-pane label="历史作业" name="2">
-        <div class="loginOut">
-          <el-button type="text" icon="el-icon-plus" @click="createHw" style="font-size: 14px">创建作业</el-button>
-        </div>
-        <el-empty :image-size="300"></el-empty>
-      </el-tab-pane>
-    </el-tabs>
+    </div>
+    <el-card style="min-height: 60vh">
+      <el-table :data="list" stripe style="margin-top:10px">
+        <el-table-column prop="cid" label="作业编号" align="center" width="100"></el-table-column>
+        <el-table-column label="作业标题" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" @click="open">{{ scope.row.title }}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" align="center" width="200">
+          <template slot-scope="scope">
+            <span class="ready" v-if="scope.row.start > currentTime">Ready</span>
+            <span class="run" v-if="scope.row.start < currentTime && scope.row.end > currentTime">Running</span>
+            <span class="end" v-if="scope.row.end < currentTime" >Ended</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="type" label="类型" align="center" width="150"></el-table-column>
+        <el-table-column prop="tname" label="创建者" align="center" width="150"></el-table-column>
+        <el-table-column v-if="isAdmin" label="操作" align="center" width="150">
+          <template>
+            <el-button type="text" @click="Hw">编辑</el-button>
+            <el-button type="text">删除</el-button>
+            <el-button type="text" @click="exports">导出</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage3"
+          :page-size="10"
+          layout="prev, pager, next, jumper"
+          :total="30">
+      </el-pagination>
+    </el-card>
+
   </div>
 </template>
 
 <script>
-import Tinymce from "@/components/tinymce";
 import router from "@/router";
 export default {
   name: "common-homework",
+  components: {
+  },
   data() {
     return {
-      activeName: '0',
-      dialogFormVisible: false,
-      value1: '',
-      value2: '',
-      radio: '1',
-      yesData: [],
-      noData: [],
-      Data:[
-        {id:1,name:'计算机一班'},
-        {id:2,name:'计算机二班'},
-        {id:3,name:'计算机三班'}
-      ],
-      attendanceData:[
-        {cname: '2021级【大数据1-3班】数据结构实验1',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',num: 5},
-        {cname: '2021级【大数据1-3班】数据结构实验1',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',num: 5},
-        {cname: '2021级【大数据1-3班】数据结构实验1',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',num: 5},
-        {cname: '2021级【大数据1-3班】数据结构实验1',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',num: 5}
+      currentTime:Date.now(),
+      isAdmin:true,
+      list:[
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()-1,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()+1,end:Date.now()+2,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'}
       ]
     };
   },
   methods: {
-    handleClick(tab, event) {
-      router.push({ path: '/common_homework', query: { tab: tab.name } })
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
+    open(){
+      router.push("/common_homeworks/123")
+    },
+    Hw(){
+      router.push("/common_homework/add")
     },
     createHw(){
       router.push("/common_homework/add")
     },
-    handleCommand(command) {
-      if(command=="a"){
-        //this.dialogFormVisible = true
-        this.openCard()
-      }
-    },
-    openCard(){
-      router.push("/common_homework/detail")
+    exports(){
+      router.push("/common_homeworks/123/export")
     }
   }
 }
 </script>
 
 <style scoped>
-.loginOut{
-  position: absolute;
-  right:2%;
-  top:0;
-  font-weight: 600;
-  font-size: 14px;
+.ready{
+  font-weight: bold;
+  color: blue;
+}
+.run{
+  font-weight: bold;
+  color: red;
+}
+.end{
+  font-weight: bold;
+  color: black;
+}
+.el-table{
+  margin-bottom: 20px;
 }
 </style>

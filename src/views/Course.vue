@@ -1,6 +1,6 @@
 <template>
   <el-container style="min-height: 100vh">
-    <el-aside :width="sideWidth+'px'" style="box-shadow: 2px 0 6px rgb(0 21 41 / 35%);">
+    <el-aside :width="sideWidth+'px'">
       <Aside :isCollapse="isCollapse" :logoTextShow="logoTextShow" />
     </el-aside>
     <el-container>
@@ -12,7 +12,6 @@
       </el-main>
       <About/>
     </el-container>
-
   </el-container>
 
 
@@ -35,7 +34,7 @@ export default {
     return {
       collapseBtnClass: 'el-icon-s-fold',
       isCollapse: false,
-      sideWidth: 200,
+      sideWidth: 180,
       logoTextShow: true
     }
   },
@@ -47,7 +46,7 @@ export default {
         this.collapseBtnClass = 'el-icon-s-unfold'
         this.logoTextShow = false
       }else {
-        this.sideWidth = 200
+        this.sideWidth = 180
         this.collapseBtnClass = 'el-icon-s-fold'
         this.logoTextShow = true
       }

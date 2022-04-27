@@ -26,10 +26,9 @@
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="pageNum"
-          :page-sizes="[2, 5, 15, 20]"
+          :current-page.sync="pageNum"
           :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
+          layout="prev, pager, next, jumper"
           :total="total">
       </el-pagination>
     </div>
@@ -42,7 +41,7 @@ import router from "@/router";
 import request from "@/utils/request";
 
 export default {
-  name: "Class-stu-detail",
+  name: "Class-stu-info",
   data(){
     return{
       name: '',
@@ -62,7 +61,7 @@ export default {
   },
   methods: {
     goBack() {
-      router.push("/class_stu")
+      this.$router.push({name:'class-stu'})
     },
     load(){
       request.get("http://localhost:8443/user/page",{
