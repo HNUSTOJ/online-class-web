@@ -24,18 +24,15 @@
             <span class="end" v-if="scope.row.end < currentTime" >Ended</span>
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="类型" align="center" width="150"></el-table-column>
+        <el-table-column prop="type" label="提交人数" align="center" width="150"></el-table-column>
         <el-table-column prop="tname" label="创建者" align="center" width="150"></el-table-column>
-        <el-table-column v-if="isAdmin" label="操作" align="center" width="150">
+        <el-table-column v-if="isAdmin" label="操作" align="center" width="100">
           <template>
-            <el-button type="text" @click="Hw">编辑</el-button>
             <el-button type="text">删除</el-button>
-            <el-button type="text" @click="exports">导出</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-pagination
-          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage3"
           :page-size="10"
@@ -58,38 +55,29 @@ export default {
       currentTime:Date.now(),
       isAdmin:true,
       list:[
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()-1,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()+1,end:Date.now()+2,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'},
-        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: '私有'}
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: 21},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()-1,type: 22},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()+1,end:Date.now()+2,type: 33},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: 33},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: 11},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: 11},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: 11},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: 11},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: 11},
+        {cid: 1000,title: '21级潇湘计算机【01-04】班数据结构实验2',tname: '谢沅峰',start:Date.now()-5,end:Date.now()+1,type: 11},
       ]
     };
   },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
     open(){
-      router.push("/common_homeworks/123")
-    },
-    Hw(){
-      router.push("/common_homework/add")
+      this.$router.push({name:'common-homework-info',params:{commonId:'123'}})
     },
     createHw(){
-      router.push("/common_homework/add")
+      this.$router.push({name:'common-homework-add'})
     },
-    exports(){
-      router.push("/common_homeworks/123/export")
-    }
   }
 }
 </script>

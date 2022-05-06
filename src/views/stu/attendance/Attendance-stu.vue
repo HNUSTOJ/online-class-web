@@ -1,37 +1,32 @@
 <template>
 <div>
-  <el-tabs type="border-card">
-    <el-tab-pane>
-      <span slot="label">全部签到</span>
-      <AttendanceListStu></AttendanceListStu>
-    </el-tab-pane>
+  <el-card>
+    <el-tabs  v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="全部签到" name="all-stu"></el-tab-pane>
+      <el-tab-pane label="正在签到" name="ing-stu"></el-tab-pane>
+      <el-tab-pane label="历史签到" name="history-stu"></el-tab-pane>
+    </el-tabs>
+    <router-view v-if="this.$route.params.courseId"></router-view>
+  </el-card>
 
-    <el-tab-pane>
-      <span slot="label">正在签到</span>
-      <AttendanceListStu></AttendanceListStu>
-    </el-tab-pane>
-
-    <el-tab-pane>
-      <span slot="label">历史签到</span>
-      <AttendanceListStu></AttendanceListStu>
-    </el-tab-pane>
-
-  </el-tabs>
 </div>
 </template>
 
 <script>
-import AttendanceListStu from "@/components/AttendanceListStu";
 
 export default {
   name: "Attendance-stu",
   components: {
-    AttendanceListStu
   },
   data(){
     return{
-
+      activeName:'all-stu',
     }
+  },
+  methods:{
+    handleClick(tab, event) {
+      this.$router.push({name:tab.name})
+    },
   }
 }
 </script>

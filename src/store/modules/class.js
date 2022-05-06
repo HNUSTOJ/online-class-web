@@ -4,7 +4,7 @@ import {
     getClassList,
     getClassListInfo,
     getClassSearch,
-    getClassSearchInfo,
+    getClassSearchInfo, getCourseClass,
     postClassDelete, postClassEdit,
     postClassInsert, postClassMove
 } from "@/api/index";
@@ -16,6 +16,7 @@ const state = () => ({
     classStu: [],
     stuTotal: 0,
     classAll:[],
+    inClass:0
 })
 
 //state获取
@@ -34,6 +35,9 @@ const getters = {
     },
     classAll (state){
         return state.classAll
+    },
+    inClass (state){
+        return state.inClass
     }
 }
 
@@ -63,6 +67,13 @@ const mutations = {
         }else{
             state.classAll = []
         }
+    },
+    setInClass(state, data){
+        if(data.code === 200){
+            state.inClass = data.class_id
+        }else{
+            state.inClass = 0
+        }
     }
 }
 
@@ -90,6 +101,11 @@ const actions = {
     getClassAll ({ commit }, data){
         return requestProcess(getClassAll, data, res =>
             commit("setClassAll", res)
+        );
+    },
+    getInClass ({ commit }, data){
+        return requestProcess(getCourseClass, data, res =>
+            commit("setInClass", res)
         );
     },
     postClassInsert ({ commit }, data){

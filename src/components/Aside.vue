@@ -48,7 +48,7 @@
       <i class="el-icon-date"></i>
       <span slot="title">签到</span>
     </el-menu-item>
-    <el-submenu index="">
+    <el-submenu index="1">
       <template slot="title">
         <i class="el-icon-document"></i>
         <span slot="title">作业管理</span>
@@ -66,10 +66,22 @@
           <span slot="title">普通作业</span>
         </el-menu-item>
     </el-submenu>
-    <el-menu-item :index="`/course/${id}/file`">
-      <i class="el-icon-folder-opened"></i>
-      <span slot="title">资源管理</span>
-    </el-menu-item>
+    <el-submenu index="2">
+      <template slot="title">
+        <i class="el-icon-folder-opened"></i>
+        <span slot="title">资源管理</span>
+      </template>
+      <el-menu-item :index="`/course/${id}/file`">
+        <span slot="title">文件资源</span>
+      </el-menu-item>
+      <el-menu-item :index="`/course/${id}/file_category`">
+        <span slot="title">文件分类</span>
+      </el-menu-item>
+    </el-submenu>
+<!--    <el-menu-item :index="`/course/${id}/file`">-->
+<!--      <i class="el-icon-folder-opened"></i>-->
+<!--      <span slot="title">资源管理</span>-->
+<!--    </el-menu-item>-->
     <el-menu-item :index="`/course/${id}/code`" v-if="permissions === role.isTeacher">
       <i class="el-icon-pie-chart"></i>
       <span slot="title">竞赛代码</span>

@@ -83,8 +83,7 @@ export default {
       this.query.id = this.$route.params.courseId;
       this.query.page = 1;
       this.query.classId = this.$route.params.classId;
-      this.$store.dispatch('classStore/getClassStu', this.query).then(res=>{
-      });
+      this.$store.dispatch('classStore/getClassStu', this.query).then(res=>{});
       this.$store.dispatch('classStore/getClassAll',{id:parseInt(this.$route.params.courseId)}).then(res=>{})
     },
     goBack() {

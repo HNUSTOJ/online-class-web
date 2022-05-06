@@ -18,7 +18,10 @@
         {{ username }}<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown" style="width: 100px; text-align: center">
-        <el-dropdown-item style="font-size: 14px; padding: 10px 0">
+        <el-dropdown-item style="font-size: 14px; padding: 5px 0" v-if="permissions === role.isTeacher">
+          <span style="text-decoration: none" @click="del">删除课堂</span>
+        </el-dropdown-item>
+        <el-dropdown-item style="font-size: 14px; padding: 5px 0">
           <span style="text-decoration: none" @click="logout">退 出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
@@ -44,7 +47,9 @@ export default {
   },
   computed:{
     ...mapGetters({
-      username:'loginStore/username'
+      username:'loginStore/username',
+      permissions:'loginStore/permissions',
+      role: 'loginStore/role',
     })
   },
   created() {
@@ -63,6 +68,20 @@ export default {
       this.$router.push({name:'Home'})
       localStorage.clear()
       location.reload()
+    },
+    del(){
+      this.$confirm('此操作将永久删除该课堂, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$store.dispatch('course/postCourseDelete',{id:parseInt(this.$route.params.courseId)}).then(res=>{
+          this.$router.push({name:'Home'})
+          this.$message({type: 'success', message: '删除成功!'});
+        })
+      }).catch(() => {
+        this.$message({type: 'info', message: '已取消删除'});
+      });
     }
   }
 }

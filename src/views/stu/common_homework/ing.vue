@@ -10,7 +10,7 @@
             </div>
             <div style="margin: 15px 0">
               <span style="font-size: small">{{item.tname}}</span>
-              <span style="font-size: small;margin-left: 4%">{{item.private}}</span>
+              <span style="font-size: small;margin-left: 4%">已提交:{{item.private}}人</span>
               <span style="font-size: small;margin-left: 4%">发布时间:{{item.createTime}}</span>
               <span style="font-size: small;margin-left: 2%">截止时间:{{item.limitTime}}</span>
             </div>
@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import router from "@/router";
 
 export default {
   name: "ing",
@@ -45,11 +44,9 @@ export default {
       pageNum: 1,
       pageSize: 2,
       attendanceData:[
-        {cname: '2022年上学期潇湘学院计算机系2021级《C语言课程设计》',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',private: '公开'},
-        {cname: '2022年上学期潇湘学院计算机系2021级《C语言课程设计》',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',private: '公开'},
-        {cname: '2022年上学期潇湘学院计算机系2021级《C语言课程设计》',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',private: '公开'},
-        {cname: '2022年上学期潇湘学院计算机系2021级《C语言课程设计》',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',private: '公开'},
-        {cname: '2022年上学期潇湘学院计算机系2021级《C语言课程设计》',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',private: '公开'},
+        {cname: '2022年上学期潇湘学院计算机系2021级《C语言课程设计》',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',private: 23},
+        {cname: '2022年上学期潇湘学院计算机系2021级《C语言课程设计》',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',private: 23},
+        {cname: '2022年上学期潇湘学院计算机系2021级《C语言课程设计》',tname: '谢沅峰',createTime:'2022-03-21 14:10',limitTime:'2022-03-21 14:10',private: 23},
       ]
     };
   },

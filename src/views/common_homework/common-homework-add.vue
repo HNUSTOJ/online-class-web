@@ -1,65 +1,32 @@
 <template>
   <div>
     <el-card>
-      <div>
+      <div style="size: 6px;margin-bottom: 10px">
         <span style="font-size: 15px;font-weight: bold">标题:</span>
-        <el-input v-model="title" placeholder="请输入作业标题："></el-input>
       </div>
-      <div style="margin-top: 20px">
-        <span style="font-size: 15px;font-weight: bold">题目编号:</span>
-        <el-input v-model="number" placeholder="Example:1000,1001,1002" style="margin-bottom: 20px" @blur="inputBlur"></el-input>
-        <div v-for="item in this.nums">
-          <span>{{item}}:</span>
-          <span>计算职工工资</span>
-        </div>
+      <div style="margin-bottom: 10px">
+        <el-input v-model="input" placeholder="请输入内容" maxlength="60" size="medium"></el-input>
       </div>
-      <div style="margin-top: 20px">
-        <span style="font-size: 15px;font-weight: bold">作业描述:</span>
+    </el-card>
+    <el-card style="margin-top: 10px">
+      <div style="size: 6px;margin-bottom: 10px">
+        <span style="font-size: 15px;font-weight: bold">简介:</span>
       </div>
       <tinymce></tinymce>
-      <div style="display: flex;margin-top: 40px">
-        <div>
-          <span style="font-size: 15px;font-weight: bold">公开:</span>
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-                v-for="item in options2"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div style="margin-left: 10px">
-          <span style="font-size: 15px;font-weight: bold">密码:</span>
-          <el-input v-model="password" size="mini" style="width: auto"></el-input>
-        </div>
-      </div>
-
-      <div style="margin-top: 20px">
-        <span style="font-size: 15px;font-weight: bold">语言:</span>
-        <el-select v-model="value1" multiple placeholder="请选择">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-          </el-option>
-        </el-select>
-      </div>
-
-      <div style="margin-top: 20px">
-        <span style="font-size: 15px;font-weight: bold">用户 ( Add private contest's userIDs with newline \n ) :</span>
-        <el-input
-            type="textarea"
-            :rows="2"
-            resize="none"
-            placeholder="user1
-user2
-user3"
-            v-model="textarea">
-        </el-input>
-      </div>
-
+      <el-upload
+          class="upload-demo"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :before-remove="beforeRemove"
+          multiple
+          :limit="3"
+          :on-exceed="handleExceed"
+          :file-list="fileList"
+          style="margin-top: 10px">
+        <el-button size="small">上传附件</el-button>
+      </el-upload>
+      <span style="font-size: 10px">(单个文件最大150MB)</span>
     </el-card>
     <div style="margin-top: 10px">
       <el-button type="primary" @click="promote">确定</el-button>
@@ -116,9 +83,10 @@ export default {
   },
   data() {
     return {
-      title: '',
-      number: '',
-      nums: [],
+      input: '',
+      fileList: [
+        {name: 'hustoj文档大全.pdf', url: 'C:\\Users\\Administrator\\Desktop\\hustoj文档大全.pdf'}
+      ],
       dialogFormVisible: false,
       classFormVisible: false,
       value1: '',
@@ -131,24 +99,24 @@ export default {
         {id:2,name:'计算机二班'},
         {id:3,name:'计算机三班'}
       ],
-      display: false,
-      options: [
-        {value: '1', label: 'C'}, {value: '2', label: 'C++'}, {value: '3', label: 'Pascal'}, {value: '4', label: 'Java'}, {value: '5', label: 'Ruby'},
-        {value: '6', label: 'Bash'}, {value: '7', label: 'Python'}, {value: '8', label: 'PHP'}, {value: '9', label: 'Perl'}, {value: '10', label: 'C#'},
-        {value: '11', label: 'Obj-C'}, {value: '12', label: 'FreeBasic'}, {value: '13', label: 'Scheme'}, {value: '14', label: 'Clang'}, {value: '15', label: 'Clang++'},
-        {value: '16', label: 'Lua'}, {value: '17', label: 'JavaScript'}, {value: '18', label: 'Go'}, {value: '19', label: 'SQL'}, {value: '20', label: 'Fortran'}, {value: '21', label: 'Matlab'}
-      ],
-      options2:[
-        {value: '1', label: '公开'},{value: '2', label: '私有'}
-      ],
-      password:'',
-      value: '',
-      textarea: ''
+      display: false
     }
   },
   methods: {
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`);
+    },
     back(){
-      router.push("/shixun_homework")
+      router.push("/common_homework")
     },
     promote(){
       this.dialogFormVisible = true
@@ -172,9 +140,6 @@ export default {
       }
 
     },
-    inputBlur(){
-      this.nums = this.number.split(',')
-    }
   }
 }
 </script>

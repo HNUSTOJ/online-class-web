@@ -3,20 +3,20 @@
   <el-row :gutter="10" style="margin-bottom: 60px">
     <el-col :span="8">
       <el-card style="color: #409EFF">
-        <div><i class="el-icon-user-solid" /> 历史发起次数</div>
-        <div class="el-card-div">{{ 23 }}</div>
+        <div><i class="el-icon-user-solid"/> 历史发起次数</div>
+        <div class="el-card-div">{{ num1 }}</div>
       </el-card>
     </el-col>
     <el-col :span="8">
       <el-card style="color: #F56C6C">
-        <div><i class="el-icon-money" /> 平均到课率</div>
-        <div class="el-card-div">{{ 87 }}%</div>
+        <div><i class="el-icon-money"/> 最近五次平均到课率</div>
+        <div class="el-card-div">{{ (parseFloat(num2)*100).toFixed(2) }}%</div>
       </el-card>
     </el-col>
     <el-col :span="8">
       <el-card style="color: #67C23A">
-        <div><i class="el-icon-bank-card" /> 平均旷课率</div>
-        <div class="el-card-div">{{ 12 }}%</div>
+        <div><i class="el-icon-bank-card"/> 最近五次平均旷课率</div>
+        <div class="el-card-div">{{ (parseFloat(num3)*100).toFixed(2) }}%</div>
       </el-card>
     </el-col>
   </el-row>
@@ -32,12 +32,6 @@ export default {
   name: "AttendanceStatistics",
   data(){
     return{
-      list2:[
-        {sign_name:'数据结构',truancy:2,schedule:22},
-        {sign_name:'数据结构',truancy:2,schedule:82},
-        {sign_name:'数据结构',truancy:5,schedule:92},
-        {sign_name:'数据结构',truancy:10,schedule:92},
-      ]
     }
   },
   computed:{
@@ -52,58 +46,58 @@ export default {
 
   },
   mounted() {
-    // this.$store.dispatch('attendanceStore/getStatisticList',{id:this.$route.params.courseId}).then(res=>{
-    // });
-    var option = {
-      title: {
-        text: '显示最近5次签到记录(%)'
-      },
-      tooltip: {
-        trigger: 'axis'
-      },
-      legend: {
-        data: ['到课率', '旷课率']
-      },
-      grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '3%',
-        containLabel: true
-      },
-      toolbox: {
-        feature: {
-          saveAsImage: {}
-        }
-      },
-      xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: []
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        {
-          name: '旷课率',
-          type: 'line',
+    this.$store.dispatch('attendanceStore/getStatisticList',{id:this.$route.params.courseId}).then(res=>{
+      var option = {
+        title: {
+          text: '显示最近5次签到记录(%)'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['到课率', '旷课率']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
           data: []
         },
-        {
-          name: '到课率',
-          type: 'line',
-          data: []
-        }
-      ]
-    };
-    this.list2.forEach((item,i) => {
-      option.xAxis.data[i] = item.sign_name
-      option.series[0].data[i] = item.truancy
-      option.series[1].data[i] = item.schedule
-    })
-    var chartDom = document.getElementById('main');
-    var myChart = echarts.init(chartDom);
-    myChart.setOption(option);
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            name: '旷课率',
+            type: 'line',
+            data: []
+          },
+          {
+            name: '到课率',
+            type: 'line',
+            data: []
+          }
+        ]
+      };
+      this.list.forEach((item,i) => {
+        option.xAxis.data[i] = item.sign_name
+        option.series[0].data[i] = (parseFloat(item.truancy*100)).toFixed(2)
+        option.series[1].data[i] = (parseFloat(item.schedule*100)).toFixed(2)
+      })
+      var chartDom = document.getElementById('main');
+      var myChart = echarts.init(chartDom);
+      myChart.setOption(option);
+    });
   },
   methods:{
   }

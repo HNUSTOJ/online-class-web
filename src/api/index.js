@@ -15,7 +15,6 @@ const Login ='admin/'
 //获取首页全部课堂
 export function getCourseAll(data){
     return request(Index + `course_all`, data, "get")
-    //return request(Index + "course_all", data, "get")
 }
 
 //获取正在进行的全部课堂
@@ -73,6 +72,12 @@ export function getIndexSearch(data){
     return request(Index + 'search' , data, "get")
 }
 
+//删除教学课堂
+export function postCourseDelete(data){
+    return request(Index + 'course/delete', {courseid:data.id}, "post")
+}
+
+//班级管理
 //获取课堂管理首页
 export function getClassList(data){
     return request(Class + `${data.id}`, {page:data.page} , "get")
@@ -95,7 +100,12 @@ export function getClassSearchInfo(data){
 
 //获取课堂下所有班级
 export function getClassAll(data){
-    return request(Class + 'class_all/' + `${data.id}`, null, "get")/////////////////////////
+    return request(Class + 'class_all/' + `${data.id}`, null, "get")
+}
+
+//获取当前学生所在课堂班级
+export function getCourseClass(data){
+    return request(Class + 'course_class', {course_id:data.id}, "get")
 }
 
 //新增班级
@@ -118,19 +128,30 @@ export function postClassMove(data){
     return request(Class + 'move', data, "form")
 }
 
+//签到
 //获取全部签到首页数据
 export function getAttendanceList(data){
-    return request(Attendance+`${data.id}/`,{page:data.page},"get")
+    return request(Attendance+`${data.id}`,{page:data.page},"get")
 }
 
 //获取正在签到首页数据
 export function getAttendanceListNow(data){
-    return request(Attendance+'now/'+`${data.id}/`,{page:data.page},"get")
+    return request(Attendance+'now/'+`${data.id}`,{page:data.page},"get")
 }
 
 //获取历史签到首页数据
 export function getAttendanceListHistory(data){
-    return request(Attendance+'history/'+`${data.id}/`,{page:data.page},"get")
+    return request(Attendance+'history/'+`${data.id}`,{page:data.page},"get")
+}
+
+//获取签到统计数据
+export function getAttendanceStatistics(data){
+    return request( Attendance + 'statistics/'+`${data.id}`,null,"get")
+}
+
+//获取签到详细数据
+export function getAttendanceInfo(data){
+    return request(Attendance + 'info', {page:data.page,sign_state:data.sign_state,sign_id:data.sign_id}, "get")
 }
 
 //创建签到
@@ -138,9 +159,19 @@ export function postAttendanceCreate(data){
     return request(Attendance + 'create',data,"form")
 }
 
-//获取签到统计数据
-export function getAttendanceStatistics(data){
-    return request( Attendance + 'statistics/'+`${data.id}/`,null,"get")
+//编辑签到
+export function postAttendaceEdit(data){
+    return request(Attendance + 'edit', data, "form")
+}
+
+//删除签到
+export function postAttendanceDel(data){
+    return request(Attendance + 'delete',{sign_id:data.signId},"post")
+}
+
+//学生签到
+export function postAttendanceSign(data){
+    return request(Attendance + 'sign',{sign_id:data.sign_id,state:data.state}, "post")
 }
 
 //登录接口

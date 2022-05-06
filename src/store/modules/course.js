@@ -23,7 +23,7 @@
 // export default store
 
 import requestProcess from "@/utils/request-process";
-import {getCourseAll, getIndexSearch, postCourseJoin} from "@/api/index";
+import {getCourseAll, getIndexSearch, postCourseDelete, postCourseJoin} from "@/api/index";
 import { getCourseIngAll } from "@/api/index";
 import { getCourseEndAll } from "@/api/index";
 import { getCourseManagementAll } from "@/api/index";
@@ -118,6 +118,9 @@ const actions = {
         return requestProcess(getIndexSearch, data, res =>
             commit("setCourse", res)
         );
+    },
+    postCourseDelete({ commit }, data){
+        return requestProcess(postCourseDelete, data, ()=>{});
     },
 }
 

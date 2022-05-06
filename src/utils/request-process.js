@@ -19,7 +19,8 @@ export default function requestProcess (request, requestData = null, okHandle = 
       }
       else{
         if(res.code === -1){
-          message.error(res.code)
+          console.log(res)
+          message.error(res.msg)
           router.push({name:'Home'})
         }else{
           okHandle(res)// 请求成功执行的操作

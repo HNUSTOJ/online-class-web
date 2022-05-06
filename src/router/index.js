@@ -132,19 +132,20 @@ const routes = [
       {
         path: 'common_homework',
         name: 'common_homework',
-        component: () => import('../views/common_homework/common-homework')
+        component: () => import('../views/common_homework/common-homework'),
+        meta:{title:'普通作业'}
       },
       {
-        path: 'common_homeworks/:cid',
-        name: '',
-        component: () => import('../views/common_homework/common-homework-detail'),
-        children:[
-        ]
-      },
-      {
-        path: '/common_homework/add',
-        name: '普通作业-添加',
+        path: 'common_homework/add',
+        name: 'common-homework-add',
         component: () => import('../views/common_homework/common-homework-add'),
+        meta:{title:'普通作业-添加'}
+      },
+      {
+        path: 'common_homeworks/:commonId',
+        name: 'common-homework-info',
+        component: () => import('../views/common_homework/common-homework-detail'),
+        meta:{title:'普通作业-详情'},
       },
       {
         path: 'class_stu',////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +154,7 @@ const routes = [
         meta:{title:'班级管理'}
       },
       {
-        path: 'class_stu/:cid',
+        path: 'class_stu/:classId',
         name: 'class-stu-info',
         component: () => import('../views/stu/class/Class-stu-info'),
         meta:{title:'班级管理-详细信息'}
@@ -162,19 +163,77 @@ const routes = [
         path: 'attendance_stu',
         name: 'attendance-stu',
         component: () => import('../views/stu/attendance/Attendance-stu'),
-        meta:{title:'签到'}
+        meta:{title:'签到'},
+        children: [
+          {
+            path: '/',
+            name: 'all-stu',
+            component:() => import('../views/stu/attendance/all-stu'),
+            meta:{title:'签到'},
+          },
+          {
+            path: 'ing',
+            name: 'ing-stu',
+            component:() => import('../views/stu/attendance/ing-stu'),
+            meta:{title:'签到'},
+          },
+          {
+            path: 'history',
+            name: 'history-stu',
+            component:() => import('../views/stu/attendance/histoty-stu'),
+            meta:{title:'签到'},
+          }
+        ]
       },
       {
         path: 'shixun_homework_stu',
         name: 'shixun_homework_stu',
         component: () => import('../views/stu/shixun_homework/shixun-homework-stu'),
-        meta:{title:'实训作业'}
+        children: [
+          {
+            path: '/',
+            name: 'shixun-all',
+            component: () => import('../views/stu/shixun_homework/all'),
+            meta:{title:'实训作业'},
+          },
+          {
+            path: 'ing',
+            name: 'shixun-ing',
+            component: () => import('../views/stu/shixun_homework/ing'),
+            meta:{title:'实训作业'},
+          },
+          {
+            path: 'history',
+            name: 'shixun-history',
+            component: () => import('../views/stu/shixun_homework/history'),
+            meta:{title:'实训作业'},
+          }
+        ]
       },
       {
         path: 'common_homework_stu',
         name: 'common_homework_stu',
         component: () => import('../views/stu/common_homework/common-homework-stu'),
-        meta:{title:'普通作业'}
+        children: [
+          {
+            path: '/',
+            name: 'common-all',
+            component: () => import('../views/stu/common_homework/all'),
+            meta:{title:'普通作业'},
+          },
+          {
+            path: 'ing',
+            name: 'common-ing',
+            component: () => import('../views/stu/common_homework/ing'),
+            meta:{title:'普通作业'},
+          },
+          {
+            path: 'history',
+            name: 'common-history',
+            component: () => import('../views/stu/common_homework/history'),
+            meta:{title:'普通作业'},
+          }
+        ]
       },
       {
         path: 'common_homework_stus/:cid',
@@ -185,12 +244,20 @@ const routes = [
       {
         path: 'code',
         name: 'code',
-        component: () => import('../views/code/Code')
+        component: () => import('../views/code/Code'),
+        meta:{title:'竞赛代码'}
       },
       {
         path: 'file',
         name: 'file',
-        component: () => import('../views/file/File')
+        component: () => import('../views/file/File'),
+        meta:{title:'文件资源'}
+      },
+      {
+        path:'file_category',
+        name:'file-category',
+        component:() => import('../views/file/File-category'),
+        meta:{title:'文件分类'}
       }
     ]
   },

@@ -37,19 +37,18 @@
             <el-empty :image-size="260"></el-empty>
           </div>
           <div v-else>
-            <el-row :gutter="24">
+            <el-row :gutter="25">
               <el-col :span="6" v-for="item in courseList" style="margin: 5px 0;">
-                <el-card :body-style="{ padding: '20px'}" shadow="hover" @click.native="openCard(item.course_id)" style="cursor: pointer;border-radius: 10px">
-
-                  <div style="padding:15px;border-bottom: 1px solid #ccc">
-                    <div style="text-align: center">
-                      <span style="font-size: 16px">{{ item.title }}</span>
+                <el-card shadow="hover" @click.native="openCard(item.course_id)" style="cursor: pointer;border-radius: 10px">
+                  <div style="padding: 15px;border-bottom: 1px solid #ccc">
+                    <div style="text-align: center;height: 37px">
+                      <span style="font-size: 17px" class="tmp">{{ item.title }}</span>
                     </div>
-                    <div style="text-align: center;margin-top: 25px">
+                    <div style="text-align: center;margin-top: 15px">
                       <el-avatar :size="avatarSize" src='' icon="el-icon-user-solid"></el-avatar>
                     </div>
                     <div class="bottom clearfix" style="text-align: center;margin-bottom: 25px">
-                      <span style="font-size: 14px">{{ item.user_id }}</span>
+                      <span style="font-size: 14px" class="tmp2">{{ item.user_id }}</span>
                     </div>
                   </div>
 
@@ -94,7 +93,7 @@
               <el-input autocomplete="off" v-model="addForm.title"></el-input>
             </el-form-item>
             <el-form-item label="结束时间:">
-              <el-date-picker type="date" placeholder="请选择日期" v-model="addForm.end_time" style="width: 100%;"></el-date-picker>
+              <el-date-picker type="date" placeholder="请选择日期" v-model="addForm.end_time" style="width: 100%;" value-format="yyyy-MM-dd"></el-date-picker>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -245,32 +244,34 @@ export default {
           if(this.spanArr2[i].style.color === "rgb(76, 172, 255)")
             c2 = i;
         }
-        if(c1 === 0 && c2 === 0){
-          this.$store.dispatch('course/getCourseAll', this.query).then(res=>{});
-        }
-        if(c1 === 0 && c2 === 1){
-          this.$store.dispatch('course/getCourseIngAll',this.query).then(res=> {});
-        }
-        if(c1 === 0 && c2 === 2){
-          this.$store.dispatch('course/getCourseEndAll',this.query).then(res=>{});
-        }
-        if(c1 === 1 && c2 === 0){
-          this.$store.dispatch('course/getCourseManagementAll',this.query).then(res=>{});
-        }
-        if(c1 === 1 && c2 === 1){
-          this.$store.dispatch('course/getCourseManagementIng',this.query).then(res=>{});
-        }
-        if(c1 === 1 && c2 === 2){
-          this.$store.dispatch('course/getCourseManagementEnd',this.query).then(res=>{});
-        }
-        if(c1 === 2 && c2 === 0){
-          this.$store.dispatch('course/getCourseStudyAll',this.query).then(res=>{});
-        }
-        if(c1 === 2 && c2 === 1){
-          this.$store.dispatch('course/getCourseStudyIng',this.query).then(res=>{});
-        }
-        if(c1 === 2 && c2 === 2){
-          this.$store.dispatch('course/getCourseStudyEnd',this.query).then(res=>{});
+        switch (true) {
+          case (c1 === 0 && c2 === 0):
+            this.$store.dispatch('course/getCourseAll', this.query).then(res=>{});
+            break
+          case (c1 === 0 && c2 === 1):
+            this.$store.dispatch('course/getCourseIngAll',this.query).then(res=> {});
+            break
+          case (c1 === 0 && c2 === 2):
+            this.$store.dispatch('course/getCourseEndAll',this.query).then(res=>{});
+            break
+          case (c1 === 1 && c2 === 0):
+            this.$store.dispatch('course/getCourseManagementAll', this.query).then(res=>{});
+            break
+          case (c1 === 1 && c2 === 1):
+            this.$store.dispatch('course/getCourseManagementIng', this.query).then(res=>{});
+            break
+          case (c1 === 1 && c2 === 2):
+            this.$store.dispatch('course/getCourseManagementEnd', this.query).then(res=>{});
+            break
+          case (c1 === 2 && c2 === 0):
+            this.$store.dispatch('course/getCourseStudyAll', this.query).then(res=>{});
+            break
+          case (c1 === 2 && c2 === 1):
+            this.$store.dispatch('course/getCourseStudyIng', this.query).then(res=>{});
+            break
+          case (c1 === 2 && c2 === 2):
+            this.$store.dispatch('course/getCourseStudyEnd', this.query).then(res=>{});
+            break
         }
       }
 
@@ -325,7 +326,7 @@ export default {
   text-align: left;
 }
 .card-span{
-  margin-right: 40px;
+  margin-right: 55px;
   font-size: 15px;
   cursor: pointer;
 }
@@ -334,7 +335,7 @@ export default {
   text-align: center;
 }
 .home {
-  width: 990px;
+  width: 1100px;
   margin-left: auto;
   margin-right: auto;
   margin-top: -10px;
@@ -355,7 +356,7 @@ export default {
 }
 
 .bottom {
-  margin-top: 13px;
+  margin-top: 12px;
   line-height: 12px;
 }
 
@@ -374,4 +375,20 @@ export default {
   clear: both
 }
 
+.tmp{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.tmp2{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space:nowrap;
+  width:100%;
+  height:100%;
+  display:block;
+}
 </style>
