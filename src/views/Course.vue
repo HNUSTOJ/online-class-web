@@ -8,7 +8,7 @@
         <Header :collapseBtnClass="collapseBtnClass" @asideCollapse="collapse"/>
       </el-header>
       <el-main>
-        <router-view/>
+          <router-view/>
       </el-main>
       <About/>
     </el-container>
@@ -22,20 +22,21 @@
 import Aside from "@/components/Aside";
 import Header from "@/components/Header";
 import About from "@/components/About";
-
+import SideMenu from '@/components/SideMenu'
 export default {
   name: 'Course',
   components: {
     Aside,
     Header,
     About,
+    SideMenu
   },
   data(){
     return {
-      collapseBtnClass: 'el-icon-s-fold',
-      isCollapse: false,
-      sideWidth: 180,
-      logoTextShow: true
+      collapseBtnClass: 'el-icon-s-unfold',
+      isCollapse: true,
+      sideWidth: 64,
+      logoTextShow: false
     }
   },
   methods:{
@@ -57,10 +58,17 @@ export default {
 
 <style>
 .el-footer {
-  line-height: 60px;
-  background: #2b2e33;
+
 }
 .header{
   border-bottom: 1px solid #ccc;
+}
+
+.home {
+  width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -10px;
+  height: auto;
 }
 </style>

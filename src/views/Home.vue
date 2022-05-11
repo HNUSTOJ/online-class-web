@@ -45,7 +45,8 @@
                       <span style="font-size: 17px" class="tmp">{{ item.title }}</span>
                     </div>
                     <div style="text-align: center;margin-top: 15px">
-                      <el-avatar :size="avatarSize" src='' icon="el-icon-user-solid"></el-avatar>
+                      <el-avatar :size="avatarSize" :src="require('../assets/b.jpg')" v-if="Math.floor(Math.random()*2)+1===1"></el-avatar>
+                      <el-avatar :size="avatarSize" :src="require('../assets/g.jpg')" v-else></el-avatar>
                     </div>
                     <div class="bottom clearfix" style="text-align: center;margin-bottom: 25px">
                       <span style="font-size: 14px" class="tmp2">{{ item.user_id }}</span>
@@ -159,7 +160,8 @@ export default {
       spanArr2: [],
       pageSize: 8,
       pageNum: 1,
-      query:{}
+      query:{},
+      src:[]
     }
   },
   mounted() {

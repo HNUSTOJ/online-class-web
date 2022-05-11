@@ -9,6 +9,15 @@ import './assets/global.css'
 import request from "@/utils/request";
 
 
+import vueFilePreview from 'gxd-file-preview';
+
+//初始化自定义插件，（pdf.js,worker.js文件建议放在本地服务器),cdn有可能不稳定
+Vue.use(vueFilePreview,{
+  pdf: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.288/build/pdf.min.js', //pdf插件
+  worker:'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.288/build/pdf.worker.min.js',//pdf.work插件
+});
+
+
 Vue.config.productionTip = false
 Vue.use(ElementUI,{size: "mini"});
 Vue.use(VueClipboard)

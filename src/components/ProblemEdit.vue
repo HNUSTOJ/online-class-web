@@ -47,18 +47,18 @@
         </el-select>
       </div>
 
-      <div style="margin-top: 20px">
-        <span style="font-size: 15px;font-weight: bold">用户 ( Add private contest's userIDs with newline \n ) :</span>
-        <el-input
-            type="textarea"
-            :rows="2"
-            resize="none"
-            placeholder="user1
-user2
-user3"
-            v-model="textarea">
-        </el-input>
-      </div>
+<!--      <div style="margin-top: 20px">-->
+<!--        <span style="font-size: 15px;font-weight: bold">用户 ( Add private contest's userIDs with newline \n ) :</span>-->
+<!--        <el-input-->
+<!--            type="textarea"-->
+<!--            :rows="2"-->
+<!--            resize="none"-->
+<!--            placeholder="user1-->
+<!--user2-->
+<!--user3"-->
+<!--            v-model="textarea">-->
+<!--        </el-input>-->
+<!--      </div>-->
 
     </el-card>
     <div style="margin-top: 10px">
@@ -148,7 +148,7 @@ export default {
   },
   methods: {
     back(){
-      router.push("/shixun_homework")
+      this.$router.push({name:'shixun-homework-list'})
     },
     promote(){
       this.dialogFormVisible = true

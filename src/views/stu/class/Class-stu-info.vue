@@ -4,11 +4,11 @@
       <div>
         <el-page-header @back="goBack" content="计算机二班"></el-page-header>
       </div>
-      <div style="display: flex;margin-top: 30px">
+      <div style="display: flex;justify-content: space-between;margin-top: 30px">
         <div>
           <span>共{{total}}个学生</span>
         </div>
-        <div style="margin-left: 905px">
+        <div>
           <el-input style="width: 200px" placeholder="请输入姓名进行搜索" suffix-icon="el-icon-search" v-model="Name"></el-input>
           <el-button style="margin-left: 5px" type="primary" @click="search">搜索</el-button>
         </div>

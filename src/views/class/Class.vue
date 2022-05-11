@@ -13,7 +13,7 @@
     </div>
 
 
-    <el-table :data="classList" border stripe :header-cell-class-name="headerBg" :default-sort = "{prop: 'class_id', order: 'ascending'}">
+    <el-table :data="classList" border stripe :header-cell-class-name="headerBg" :default-sort = "{prop: 'class_id', order: 'ascending'}" style="font-size: 13px">
       <el-table-column prop="class_id" label="ID" width="80" align="center" sortable></el-table-column>
       <el-table-column prop="class_name" label="分班名称" width="300" align="center"></el-table-column>
       <el-table-column prop="class_num" label="学生成员" width="100" align="center"></el-table-column>

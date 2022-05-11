@@ -23,7 +23,7 @@
       </el-select>
     </div>
     <div style="margin-top: 15px">
-      <el-table :data="list" border stripe :header-cell-class-name="headerBg">
+      <el-table :data="list" border stripe :header-cell-class-name="headerBg" style="font-size: 13px">
         <el-table-column prop="id" label="序号" width="100" align="center">
           <template slot-scope="scope">
             <span>{{scope.$index}}</span>

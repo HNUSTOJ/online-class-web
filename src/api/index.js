@@ -12,6 +12,16 @@ const Attendance = 'attendance/'
 //登录路径
 const Login ='admin/'
 
+
+//实训作业路径
+const Training = 'training/'
+
+
+//登录接口
+export function postLogin(data){
+    return request(Login + 'login', data, "post")
+}
+
 //获取首页全部课堂
 export function getCourseAll(data){
     return request(Index + `course_all`, data, "get")
@@ -174,10 +184,38 @@ export function postAttendanceSign(data){
     return request(Attendance + 'sign',{sign_id:data.sign_id,state:data.state}, "post")
 }
 
-//登录接口
-export function postLogin(data){
-    return request(Login + 'login', data, "post")
+//实训作业
+//获取全部实训作业（搜索）
+export function getTrainingContestList(data){
+    return request(Training + 'contest_list', {course_id:data.id,page:data.page,title:data.title}, "get")
 }
+
+//获取题目编号数据
+export function getTrainingProblemTitle(data){
+    return request(Training + 'problem_title', {problem_id:data.problem_id}, "get")
+}
+
+//获取实训编辑信息
+export function getTrainingEditInfo(data){
+    return request(Training + 'eidt_info', {contest_id:data.id}, "get")
+}
+
+//创建实训作业
+export function postTrainingCreate(data){
+    return request(Training + 'create', data, "form")
+}
+
+//编辑实训作业
+export function postTrainingEdit(data){
+    return request(Training + 'edit', data, "form")
+}
+
+//删除实训作业
+export function postTrainingDelete(data){
+    return request(Training + 'delete', {contest_id:data.id}, "post")
+}
+
+
 
 
 

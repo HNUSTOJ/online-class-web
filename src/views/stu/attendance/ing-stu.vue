@@ -5,11 +5,13 @@
         <el-card shadow="hover">
           <div style="margin: 10px 0">
             <span>{{ item.sign_name }}</span>
-            <el-tag type="success">进行中</el-tag>
+            <el-tag v-if="compare(item.start_time,currentTime)">准备中</el-tag>
+            <el-tag type="success" v-if="compare(currentTime,item.start_time)&&compare(item.end_time,currentTime)">进行中</el-tag>
+            <el-tag type="danger" v-if="compare(currentTime,item.end_time)">已结束</el-tag>
           </div>
-          <div class="signInStatus blue">
-            {{state[0]}}
-          </div>
+          <div class="signInStatus blue" v-if="item.state === '1'"><span>已签到</span></div>
+          <div class="signInStatus red" v-if="item.state === '2'"><span>迟到</span></div>
+          <div class="signInStatus red" v-if="item.state === '0'"><span>未签到</span></div>
           <div class="atNum">
             <span>签到人数</span>
             <el-progress :percentage="setItemProgress(item)" style="width: 25%;margin: auto 5px" :show-text="false"></el-progress>
@@ -22,7 +24,7 @@
             <span style="font-size: small;margin-left: 4%">迟到时间:{{item.late_time.substring(0,19).replace('T',' ')}}</span>
             <span style="font-size: small;margin-left: 4%">结束时间:{{item.end_time.substring(0,19).replace('T',' ')}}</span>
             <div style="float: right">
-              <el-button type="primary" @click="sign(item)">签到</el-button>
+              <el-button type="primary" @click="sign(item)" v-if="compare(currentTime,item.start_time)&&compare(item.end_time,currentTime)&&item.state==='0'">签到</el-button>
             </div>
           </div>
         </el-card>
@@ -55,7 +57,7 @@ export default {
       pageNum: 1,
       pageSize: 3,
       query:{},
-      state:['正常','迟到','未签到'],
+      state:['未签到','正常','迟到'],
       currentTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
     }
   },
@@ -73,12 +75,12 @@ export default {
       this.query.id = this.$route.params.courseId;
       this.query.page = page;
       this.$store.dispatch('attendanceStore/getIngList', this.query).then(res=>{
-        console.log(res)
+        //console.log(res)
       });
     },
     handleCurrentChange(pageNum){
       this.pageNum=pageNum
-      this.load(2)
+      this.load(pageNum)
     },
     sign(item){
       let state;
@@ -103,6 +105,15 @@ export default {
         return parseInt((data.signed_num / data.sign_num).toFixed(1) * 100)
       }
     },
+    compare(date1,date2) {
+      let dates1 = new Date(date1);
+      let dates2 = new Date(date2);
+      if (dates1 > dates2) {
+        return true
+      } else {
+        return false
+      }
+    }
   }
 }
 </script>
@@ -127,6 +138,7 @@ export default {
   align-items: flex-end;
   justify-content: center;
   transform: rotate(45deg);
+  font-size: 14px;
 }
 .el-card{
   margin: 10px 0;

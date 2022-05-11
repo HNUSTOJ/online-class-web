@@ -31,7 +31,7 @@
 
     </div>
 
-    <el-table :data="classStu" border stripe :header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
+    <el-table :data="classStu" border stripe :header-cell-class-name="headerBg" @selection-change="handleSelectionChange" style="font-size: 13px">
       <el-table-column prop="user_id" label="ID" type="selection" width="80" align="center"></el-table-column>
       <el-table-column prop="user_id" label="学号" width="250" align="center"></el-table-column>
       <el-table-column prop="user_name" label="姓名" width="200" align="center"></el-table-column>

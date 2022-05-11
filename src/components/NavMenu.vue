@@ -1,12 +1,19 @@
 <template>
   <div class="container-div">
-    <div style="width: 50%">
+    <div>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="'/'">首 页</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
-    <span class="container-span">湖南科技大学在线实训课堂</span>
+    <div>
+      <el-image
+          style="width: 30px; height: 30px;display:inline-block;vertical-align:-8px;margin-right: 6px;"
+          :src="require('../assets/logo.png')"
+          fit="fill"></el-image>
+      <span class="container-span">湖南科技大学在线实训课堂</span>
+    </div>
+
 
     <el-dropdown>
       <div style="display: inline-block">
@@ -58,10 +65,12 @@ export default {
 <style scoped>
 .container-div{
   line-height: 60px;
+  height: 60px;
   display: flex;
+  justify-content: space-between;
 }
 .container-span{
-  width: 56%;
+  /*width: 56%;*/
   font-size: 20px;
   font-weight: bold;
 }
@@ -70,9 +79,9 @@ export default {
   margin-left: 10px;
 }
 .el-dropdown{
-  width: 150px;
+  width: 70px;
   cursor: pointer;
-  text-align: right;
+  /*text-align: right;*/
 }
 .el-dropdown-menu{
   width: 100px;

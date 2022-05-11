@@ -45,6 +45,7 @@
 
 import axios from "axios"
 import Cookie from "js-cookie"
+import qs from "qs";
 
 // 对axios函数进行封装，用来发api请求，post使用qs进行处理，避免自己把from数据转换为json字符串
 export default async function request (url, data, type) {
@@ -54,11 +55,6 @@ export default async function request (url, data, type) {
         //baseURL:'http://127.0.0.1:4523/mock/785490/',
         withCredentials: false
     })
-    // let token = ''
-    // if (Cookie.get('token') !== undefined) {
-    //     // 把cookie数据解析为对象
-    //     token = 'Bearer '+Cookie.get('token')
-    // }
     let token = localStorage.getItem('token')
     // 默认数据
     const res = {
@@ -69,9 +65,13 @@ export default async function request (url, data, type) {
     try {
         // 判断请求类型
         if (type === 'get') {
-            return (await service.get(url, { params: data, headers: { 'Content-Type': 'application/json;charset=utf-8' , 'token':token} })).data
+            return (await service.get(url, {params: data, headers: { 'Content-Type': 'application/json;charset=utf-8' , 'token':token},
+                paramsSerializer: function (params) {
+                    return qs.stringify(params, { indices: false })//使用qs对数组类型做序列化处理
+                }
+            })).data
         } else if (type === 'post') {
-            return (await service.post(url, data,{ params:data, headers: { 'Content-Type': 'application/json;charset=utf-8' , 'token':token} })).data
+            return (await service.post(url, data,{ params: data, headers: { 'Content-Type': 'application/json;charset=utf-8' , 'token':token} })).data
         } else if (type === 'put') {
             return (await service.put(url, data)).data
         } else if (type === 'delete') {

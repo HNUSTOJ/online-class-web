@@ -1,9 +1,6 @@
 <template>
 <div>
-<!--  <form method="" action="">-->
-    <textarea :id="ID"></textarea>
-<!--  </form>-->
-
+  <textarea :id="ID"></textarea>
 </div>
 </template>
 
@@ -13,8 +10,7 @@ export default {
   data(){
     const ID = Date.now()
     return {
-      content: '',
-      ID: ID
+      ID: ID,
     }
   },
   mounted() {
@@ -29,10 +25,14 @@ export default {
       toolbar: 'newdocument | bold italic forecolor | bullist numlist | code codesample link | emoticons image table | hr undo redo | preview',
       plugins: 'hr lists code codesample link emoticons image imagetools table preview textcolor',
       setup: function(editor) {
-        editor.on('click', function(e) {
-          console.log(editor.getContent());
+        editor.on('blur', function(e) {
+          //console.log(editor.getContent());
+          localStorage.setItem('tinymceContent',editor.getContent())
         });
-      }
+        editor.on('init', function(e) {
+          editor.setContent(localStorage.getItem('editDes'))
+        });
+      },
     });
   },
   beforeDestroy () {

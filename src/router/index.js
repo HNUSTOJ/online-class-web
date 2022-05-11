@@ -38,7 +38,6 @@ const routes = [
       },
       {
         path: 'attendance',
-        name: 'attendance',
         component: () => import('../views/attendance/Attendance'),
         meta:{title:'签到'},
         children: [
@@ -87,7 +86,7 @@ const routes = [
         meta:{title:'实训作业-添加'}
       },
       {
-        path: 'shixun_homeworks/:cid',
+        path: 'shixun_homeworks/:contestId',
         component: () => import('../views/shixun_homework/shixun-homework'),
         children:[
           {
@@ -161,7 +160,6 @@ const routes = [
       },
       {
         path: 'attendance_stu',
-        name: 'attendance-stu',
         component: () => import('../views/stu/attendance/Attendance-stu'),
         meta:{title:'签到'},
         children: [
@@ -187,7 +185,6 @@ const routes = [
       },
       {
         path: 'shixun_homework_stu',
-        name: 'shixun_homework_stu',
         component: () => import('../views/stu/shixun_homework/shixun-homework-stu'),
         children: [
           {
@@ -212,7 +209,6 @@ const routes = [
       },
       {
         path: 'common_homework_stu',
-        name: 'common_homework_stu',
         component: () => import('../views/stu/common_homework/common-homework-stu'),
         children: [
           {
@@ -283,6 +279,9 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   localStorage.setItem("currentPathName", to.meta.title)  // 设置当前的路由名称
 
+  if(from.name === 'shixun-homework-edit'){
+    localStorage.removeItem("editDes");
+  }
   if(to.path === '/'||to.path === '/404'){
     next();
   }else{

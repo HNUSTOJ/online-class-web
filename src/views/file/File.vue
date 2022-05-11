@@ -1,36 +1,34 @@
 <template>
   <div>
-    <div style="padding: 10px 0;display: flex">
+    <div style="padding: 10px 0;display: flex;justify-content: space-between">
       <el-input style="width: 300px" placeholder="请输入文件名" v-model="searchInput">
         <el-button slot="append" icon="el-icon-search" @click=""></el-button>
       </el-input>
-      <el-select clearable placeholder="请选择文件分类" v-model="fileType" style="margin-left: 10px">
-        <el-option v-for="item in fileTypeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
       <el-button icon="el-icon-plus" @click="imports"  style="margin-left: 5px"></el-button>
     </div>
     <el-card>
-      <el-table :data="list.slice((pageNum - 1) * pageSize, pageNum * pageSize)" stripe :default-sort = "{prop: 'id', order: 'ascending'}">
-        <el-table-column prop="id" label="ID" align="center" width="100" sortable></el-table-column>
-        <el-table-column label="文件名" align="center">
-          <template slot-scope="scope">
-            <el-button  type="text">{{scope.row.title}}</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column prop="category" label="类别" :show-overflow-tooltip="true" align="center" width="120"></el-table-column>
-        <el-table-column prop="size" label="文件大小（MB）" align="center" width="120"></el-table-column>
-        <el-table-column prop="type" label="文件类型" align="center" width="120"></el-table-column>
-        <el-table-column prop="author" label="作者" :show-overflow-tooltip="true" align="center" width="120"></el-table-column>
-        <el-table-column prop="time" label="上传时间" align="center" width="150"></el-table-column>
-        <el-table-column label="操作" align="center" width="160">
-          <template slot-scope="scope">
-            <el-button type="text" @click="edit">编辑</el-button>
-            <el-button type="text" v-if="isTeacher">删除</el-button>
-            <el-button type="text">下载</el-button>
-          </template>
+<!--      <el-table :data="lists.slice((pageNum - 1) * pageSize, pageNum * pageSize)" stripe :default-sort = "{prop: 'id', order: 'ascending'}">-->
+<!--        <el-table-column prop="id" label="ID" align="center" width="100" sortable></el-table-column>-->
+<!--        <el-table-column label="文件名" align="center">-->
+<!--          <template slot-scope="scope">-->
+<!--&lt;!&ndash;            <el-button type="text">{{scope.row.title}}</el-button>&ndash;&gt;-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column prop="category" label="类别" :show-overflow-tooltip="true" align="center" width="120"></el-table-column>-->
+<!--        <el-table-column prop="size" label="文件大小（MB）" align="center" width="120"></el-table-column>-->
+<!--        <el-table-column prop="type" label="文件类型" align="center" width="120"></el-table-column>-->
+<!--        <el-table-column prop="author" label="作者" :show-overflow-tooltip="true" align="center" width="120"></el-table-column>-->
+<!--        <el-table-column prop="time" label="上传时间" align="center" width="150"></el-table-column>-->
+<!--        <el-table-column label="操作" align="center" width="160">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button type="text" @click="edit">编辑</el-button>-->
+<!--            <el-button type="text" v-if="isTeacher">删除</el-button>-->
+<!--            <el-button type="text">下载</el-button>-->
+<!--          </template>-->
 
-        </el-table-column>
-      </el-table>
+<!--        </el-table-column>-->
+<!--      </el-table>-->
+      <xd-file-list-preview :show-close="showClose" :list="list" @remove="handleRemoveClick"></xd-file-list-preview>
       <div style="padding: 10px 0">
         <el-pagination
             @current-change="handleCurrentChange"
@@ -42,39 +40,26 @@
       </div>
     </el-card>
     <el-dialog title="上传资源" :visible.sync="dialogFormVisible" width="30%">
-
-<!--      <el-form label-width="100px" size="small">-->
-<!--        <el-upload-->
-<!--            class="upload-demo"-->
-<!--            action="https://jsonplaceholder.typicode.com/posts/"-->
-<!--            :on-preview="handlePreview"-->
-<!--            :on-remove="handleRemove"-->
-<!--            :before-remove="beforeRemove"-->
-<!--            multiple-->
-<!--            :limit="1"-->
-<!--            :on-exceed="handleExceed"-->
-<!--            :file-list="fileList">-->
-<!--          <el-button size="small" type="primary">点击上传</el-button>-->
-<!--          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-<!--        </el-upload>-->
-<!--        <el-input type="textarea" style="margin-top: 10px" placeholder="在此输入资源描述" autosize maxlength="50" show-word-limit v-model="textarea"></el-input>-->
-<!--      </el-form>-->
-      <label>选择文件分类：</label>
-      <el-select id="selectCate" prop="addFileForm.selectFileCate" v-model="addFileForm.selectFileCate" placeholder="请选择">
-        <el-option v-for="item in fileTypeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select><br /><br />
+      <label>文件命名：</label>
+      <el-input style="width: 70%" placeholder="请输入文件名" v-model="searchInput"></el-input>
+      <br/><br/>
       <el-upload
           class="upload-demo"
           drag
           :on-success="uploadFileSuccess"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :before-remove="beforeRemove"
+          :on-exceed="handleExceed"
+          :limit="limit"
           action="https://jsonplaceholder.typicode.com/posts/"
           multiple
           :file-list="fileList"
-          style="text-align: center"
-      >
+          style="text-align: center;">
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">
           将文件拖到此处，或<em>点击上传</em>
+          (支持上传PDF，PNG，JPEG，JPG，GIF，DOC，DOCX，PPT，PPTX，ELXS，ELX等文件)
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
@@ -83,20 +68,18 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="修改文件" :visible.sync="updateDialog" width="35%">
-<!--      <label for="updateFileName">文件名称：</label>-->
-<!--      <el-input v-model="input" id="updateFileName" placeholder="请输入内容"></el-input>-->
-      <el-form label-width="100px" size="small" :model="editForm" ref="editForm">
-        <el-form-item label="文件名称:" prop="input">
-          <el-input autocomplete="off" v-model="input"></el-input>
-          <input id="updateFileId" hidden />
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="updateDialog=false">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
-      </span>
-    </el-dialog>
+<!--    <el-dialog title="修改文件" :visible.sync="updateDialog" width="35%">-->
+<!--      <el-form label-width="100px" size="small" :model="editForm" ref="editForm">-->
+<!--        <el-form-item label="文件名称:" prop="input">-->
+<!--          <el-input autocomplete="off" v-model="input"></el-input>-->
+<!--          <input id="updateFileId" hidden />-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="updateDialog=false">取 消</el-button>-->
+<!--        <el-button type="primary">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
@@ -105,24 +88,20 @@ export default {
   name: "File",
   data() {
     return {
+      showClose: true,
       isTeacher: this.$store.state.idAdmin,
+      limit: 1,
       searchInput:'',
       fileType:'',
       textarea: '',
-      fileTypeList:[
-        {id:'1',name:'111'},
-        {id:'2',name:'222'},
-        {id:'3',name:'333'},
-        {id:'4',name:'555'},
-      ],
       dialogFormVisible:false,
-      updateDialog:false,
+      // updateDialog:false,
       input:'',
       editForm:{},
       fileList: [
         {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
       ],
-      list:[
+      lists:[
         {id:1,title:'abc',category:'text',size:'15',src:'',type:'jpg',time:'2020-01-11 11:00:00',author:'xyf'},
         {id:2,title:'abc',category:'text',size:'15',src:'',type:'jpg',time:'2020-01-11 11:00:00',author:'xyf'},
         {id:3,title:'abc',category:'text',size:'15',src:'',type:'jpg',time:'2020-01-11 11:00:00',author:'xyf'},
@@ -139,6 +118,21 @@ export default {
         {id:14,title:'abc',category:'text',size:'15',src:'',type:'jpg',time:'2020-01-11 11:00:00',author:'xyf'},
         {id:15,title:'abc',category:'text',size:'15',src:'',type:'jpg',time:'2020-01-11 11:00:00',author:'xyf'},
       ],
+      list: [
+        {url: 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf'},
+        {url: 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf'},
+        {url: 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf'},
+        {url: 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf'},
+        {url: 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf'},
+        {url: 'https://jfb-public-images.oss-cn-qingdao.aliyuncs.com/admin-upload/202111081034429231.png?x-oss-process=style/common'},
+        {url: 'http://static.e56buy.com/XdgfsqR2INp7uFxTuLQtnMstYLY4K8rr.蛋糕缺少内容.docx', name: 'aaaa'},
+        {
+          url: 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf',
+          name: 'abc',
+          fid: '1',
+          download: false ,//是否展示下载按钮
+        },
+      ],
       pageNum:1,
       pageSize:8,
       total:15,
@@ -148,9 +142,6 @@ export default {
     }
   },
   methods:{
-    imports(){
-      this.dialogFormVisible = true
-    },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
@@ -163,15 +154,39 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
+    uploadFileSuccess(response, file, fileList){
+      console.log('123123');
+    },
+    imports(){
+      this.dialogFormVisible = true
+    },
     handleCurrentChange(pageNum) {
       this.pageNum = pageNum
     },
-    uploadFileSuccess(){
-
-    },
     edit(){
       this.updateDialog = true
-    }
+    },
+    /**
+     * @description 点击查看预览功能
+     */
+    handleClick() {
+      this.$preview({
+        url: 'http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf',
+        fid: 'aadadads',
+        download: false ,//是否展示下载按钮
+      })
+    },
+    /**
+     * @description 删除图片事件
+     * @param item {Object} 当前被删除的文件对象
+     * @param done {function} 删除文件完成回调函数
+     */
+    handleRemoveClick(item, done) {
+      setTimeout(() => {
+        console.log('handleRemoveClick', item);
+        done()
+      }, 2000);
+    },
   }
 }
 </script>
