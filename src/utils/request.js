@@ -78,7 +78,9 @@ export default async function request (url, data, type) {
             return (await service.delete(url, data)).data
         } else if (type === 'form') {
             return (await service.post(url, data,{ headers: { 'Content-Type': 'application/json;charset=utf-8' , 'token':token} })).data
-        } else {
+        } else if (type === 'file') {
+            return (await service.post(url, data.file,{ params: {courseid:data.courseid,title:data.title,private:data.private}, headers: { 'Content-Type': 'multipart/form-data' , 'token':token} })).data
+        } else{
             return res
         }
     } catch (e) {

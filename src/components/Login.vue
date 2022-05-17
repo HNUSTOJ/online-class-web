@@ -41,11 +41,22 @@ export default {
       rules: {
         userId: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur'}
+          {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur'},
+          {
+            validator: function(rule, value, callback) {
+              if (/^[A-Za-z0-9]{4,40}$/.test(value) == false) {
+                callback(new Error("只能输入英文和数字"));
+              } else {
+                //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur'}
+          {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur'},
         ],
       }
     }

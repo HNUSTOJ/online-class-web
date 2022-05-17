@@ -11,7 +11,7 @@ export default function requestProcess (request, requestData = null, okHandle = 
         errHandle(res)// 请求失败执行的操作
         reject(res)// 请求失败的回调
         const r = confirm('登录异常，请点击确认以返回首页重新登录!');
-        if(r===true){
+        if(true){
           localStorage.clear()
           router.push({name:'Home'})
           location.reload()

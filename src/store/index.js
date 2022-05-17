@@ -5,6 +5,7 @@ import classStore from './modules/class'
 import attendanceStore from './modules/attendance'
 import loginStore from './modules/login'
 import shixunStore from './modules/shixun'
+import fileStore from './modules/file'
 
 Vue.use(Vuex)
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
         classStore,
         attendanceStore,
         loginStore,
-        shixunStore
+        shixunStore,
+        fileStore
     }
 })

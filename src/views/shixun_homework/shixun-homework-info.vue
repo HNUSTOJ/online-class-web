@@ -1,53 +1,97 @@
 <template>
   <div>
     <div style="text-align: center;margin-top: 20px">
-      <h3>Contest1977 - 2020集训队寒假作业</h3>
+      <h3>Contest{{contest.contest_id}} - {{ contest.title }}</h3>
       <p></p>
-      <br>Start Time: <span style="color: #993399; ">2020-01-11 11:00:00</span>
-      End Time: <span style="color: #993399; ">2020-03-29 15:00:00</span><br>
-      Current Time: <span style="color: #993399; "><span id="nowdate">2022-4-9 15:56:56</span></span>
+      <br>Start Time: <span style="color: #993399; ">{{ contest.start_time }}&nbsp;&nbsp;</span>
+      End Time: <span style="color: #993399; ">{{ contest.end_time }}</span><br>
+      Current Time: <span style="color: #993399; "><span id="nowdate">{{ currentTime }}</span></span><br>
+      Status:
+      <span v-if="compare(currentTime,contest.end_time)">Ended</span>
+      <span v-if="compare(contest.start_time,currentTime)">Start</span>
+      <span v-if="compare(currentTime,contest.start_time)&&compare(contest.end_time,currentTime)">Running</span>&nbsp;&nbsp;
+      <span v-if="contest.private===1">Private</span>
+      <span v-if="contest.private===0">Public</span>
       <br>
-      Status:<span>Ended</span>&nbsp;
-      <span>Public<br>
-[<router-link :to="{name: 'shixun-homework-status'}"><a>Status</a></router-link>]
-[<router-link :to="{name: 'shixun-homework-standing'}"><a>Standing</a></router-link>]
-[<a>Statistcs</a>]
-</span></div>
-    <el-table :data="tableData" stripe style="width: 100%;margin-top:10px">
-      <el-table-column prop="sign" align="center" width="80"></el-table-column>
-      <el-table-column prop="id" label="题目编号" align="center" width="200"></el-table-column>
+      <span>
+        [<router-link :to="{name: 'shixun-homework-status'}"><a>Status</a></router-link>]
+        [<router-link :to="{name: 'shixun-homework-standing'}"><a>Standing</a></router-link>]
+        [<a>Statistics</a>]
+      </span>
+    </div>
+    <el-table :data="contestInfo" stripe style="width: 100%;margin-top:10px">
+      <el-table-column align="center" width="80">
+        <template slot-scope="scope">
+          <span v-if="scope.row.result===1">Y</span>
+          <span v-if="scope.row.result===0">N</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="题目编号" align="center" width="200">
+        <template slot-scope="scope">
+          <span>{{scope.row.problem_id}}</span>&nbsp;&nbsp;Problem  {{num[scope.row.num]}}
+        </template>
+      </el-table-column>
       <el-table-column label="标题" align="center">
-        <template>
-          <el-button type="text" @click="openProblem">寻找宝藏</el-button>
+        <template slot-scope="scope">
+          <el-button type="text" @click="openProblem(scope.row.problem_id)">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="source" label="来源/分类" align="center"></el-table-column>
-      <el-table-column prop="cross" label="正确" align="center" width="80"></el-table-column>
-      <el-table-column prop="submit" label="提交" align="center" width="80"></el-table-column>
+      <el-table-column prop="c_accepted" label="正确" align="center" width="80"></el-table-column>
+      <el-table-column prop="c_submit" label="提交" align="center" width="80"></el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-
+import {mapGetters} from "vuex";
+import moment from "moment";
+import {ascii} from "@/assets/data";
 export default {
   name: "shixun-homework-info",
   data(){
     return{
-      tableData: [
-        {sign:'Y',id:'1638',title:'寻找宝藏',source:'吴展辉 陈迪祺',cross:'23',submit:'50'},
-        {sign:'Y',id:'1638',title:'寻找宝藏',source:'吴展辉 陈迪祺',cross:'23',submit:'50'},
-        {sign:'Y',id:'1638',title:'寻找宝藏',source:'吴展辉 陈迪祺',cross:'23',submit:'50'},
-        {sign:'Y',id:'1638',title:'寻找宝藏',source:'吴展辉 陈迪祺',cross:'23',submit:'50'},
-        {sign:'Y',id:'1638',title:'寻找宝藏',source:'吴展辉 陈迪祺',cross:'23',submit:'50'},
-        {sign:'Y',id:'1638',title:'寻找宝藏',source:'吴展辉 陈迪祺',cross:'23',submit:'50'},
-        {sign:'Y',id:'1638',title:'寻找宝藏',source:'吴展辉 陈迪祺',cross:'23',submit:'50'}
-      ]
+      info:this.$route.query.info,
+      contest:{},
+      num:ascii,
+      currentTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+      pNum:[]
     }
   },
+  computed:{
+    ...mapGetters({
+      contestInfo:'shixunStore/contestInfo'
+    })
+  },
+  created() {
+    this.contest = JSON.parse(this.info)
+    this.contest.start_time = moment(new Date(this.contest.start_time)).format('YYYY-MM-DD HH:mm:ss')
+    this.contest.end_time = moment(new Date(this.contest.end_time)).format('YYYY-MM-DD HH:mm:ss')
+    this.load()
+  },
   methods: {
-    openProblem(){
-      this.$router.push({name:'shixun-homework-problem'})
+    load(){
+      let _this = this
+      this.$store.dispatch('shixunStore/getTrainingContestInfo',{id:parseInt(this.contest.contest_id)}).then(res=>{
+        _this.contestInfo.forEach(function (item, index) {
+          let num = _this.num[index]
+          let id = item.problem_id
+          _this.pNum.push({num,id})
+        });
+        localStorage.setItem('pNum',JSON.stringify(_this.pNum))
+      })
+    },
+    openProblem(id){
+      this.$router.push({name:'shixun-homework-problem',params:{problemId:id}})
+    },
+    compare(date1,date2) {
+      let dates1 = new Date(date1);
+      let dates2 = new Date(date2);
+      if (dates1 > dates2) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }

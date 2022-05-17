@@ -3,111 +3,155 @@
     <el-row class="filter">
       <el-col :offset="1" :span="5">
         <el-col :span="6"><label>题目:</label></el-col>
-        <el-col :span="15"><el-input v-model="uid" placeholder="A"></el-input></el-col>
+        <el-col :span="15"><el-input v-model="form.pid" placeholder="A"></el-input></el-col>
       </el-col>
       <el-col :span="4">
         <el-col :span="6"><label>用户:</label></el-col>
-        <el-col :span="15"><el-input v-model="pid" placeholder="1855010216"></el-input></el-col>
+        <el-col :span="15"><el-input v-model="form.uid" placeholder="1855010216"></el-input></el-col>
       </el-col>
       <el-col :span="6">
         <el-col :span="6"><label>结果:</label></el-col>
         <el-col :span="16">
-          <el-select v-model="judge" placeholder="请选择">
-            <el-option
-                v-for="item in judgeList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-            </el-option>
+          <el-select v-model="form.judge" placeholder="请选择">
+            <el-option key="16" label="ALL" value="16"></el-option>
+            <el-option v-for="(item,index) in judgeResult" :key="index" :label="item" :value="index"></el-option>
           </el-select>
         </el-col>
       </el-col>
       <el-col :span="4">
         <el-col :span="12"><label>语言:</label></el-col>
         <el-col :span="12">
-          <el-select v-model="language" placeholder="请选择">
-            <el-option
-                v-for="item in languageList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-            </el-option>
+          <el-select v-model="form.language" placeholder="请选择">
+            <el-option key="21" label="ALL" value="21"></el-option>
+            <el-option v-for="item in languageList" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-col>
       </el-col>
       <el-col :span="3">
-        <el-button type="primary" @click="">查找</el-button>
+        <el-button type="primary" @click="search">查找</el-button>
       </el-col>
     </el-row>
     <el-row class="pagination">
       <el-col :span="16">
         <el-pagination
-            @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page.sync="currentPage3"
-            :page-size="10"
+            :current-page.sync="pageNum"
+            :page-size="pageSize"
             layout="prev, pager, next, jumper"
-            :total="30">
+            :total="total">
         </el-pagination>
       </el-col>
     </el-row>
-    <el-table :data="tableData" stripe style="margin-top:10px">
-      <el-table-column prop="id" label="题交编号" align="center"></el-table-column>
+    <el-table :data="problemStatus" stripe style="margin-top:10px">
+      <el-table-column prop="solution_id" label="题交编号" align="center"></el-table-column>
       <el-table-column prop="user_id" label="用户" align="center"></el-table-column>
       <el-table-column label="问题" align="center">
         <template  slot-scope="scope">
-          <el-button type="text" @click="">{{scope.row.title}}</el-button>
+          <el-button type="text" @click="toProblem(num[scope.row.num])">{{num[scope.row.num]}}</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="judge" label="结果" align="center"></el-table-column>
+      <el-table-column label="结果" align="center">
+        <template  slot-scope="scope">
+          <span v-if="scope.row.result===4&&scope.row.sim_s_id===-1">{{judgeResult[scope.row.result]}}100</span>
+          <span v-if="scope.row.result===4&&scope.row.sim_s_id!==-1">{{judgeResult[scope.row.result]}}({{scope.row.sim_s_id}})</span>
+          <span v-if="scope.row.result===6">{{judgeResult[6]}}{{(scope.row.pass_rate*100).toFixed(0)}}</span>
+          <span v-if="scope.row.result!==4&&scope.row.result!==6">{{judgeResult[scope.row.result]}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="memory" label="内存(KB)" align="center"></el-table-column>
       <el-table-column prop="time" label="耗时(MS)" align="center"></el-table-column>
-      <el-table-column prop="language" label="语言" align="center"></el-table-column>
-      <el-table-column prop="length" label="代码长度" align="center"></el-table-column>
-      <el-table-column prop="create" label="提交时间" align="center"></el-table-column>
+      <el-table-column prop="language" label="语言" align="center">
+        <template  slot-scope="scope">
+          <span>{{langName[scope.row.language]}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="code_length" label="代码长度" align="center"></el-table-column>
+      <el-table-column label="提交时间" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.in_date.substring(0,19).replace('T',' ')}}</span>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+import {judge_result} from "@/assets/data";
+import {lang} from "@/assets/data";
+import {lang_name} from "@/assets/data";
+import {ascii} from "@/assets/data";
 export default {
   name: "shixun-homework-status",
+  computed:{
+    ...mapGetters({
+      problemStatus:'shixunStore/problemStatus',
+      total:'shixunStore/problemStatusTotal',
+      contestInfo:'shixunStore/contestInfo'
+    })
+  },
   data () {
     return {
-      uid: '',
-      pid: '',
-      judge: '',
-      language: '',
-      page: 1,
-      pageSize: 30,
-      judgeList: [],
-      languageList: [
-        {label:'C++',value:'0'},
-      ],
-      result: [],
-      lang: [],
-      color: [],
-      currentPage3: 5,
-      tableData: [
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'正确100',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'答案错误50',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'时间超限50',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'正确(1183449)',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'编译错误',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'编译错误',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'编译错误',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'编译错误',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'编译错误',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'},
-        {id:'1201423',user_id:'1855010216',title:'A',judge:'编译错误',memory:'1120',time:'5',language:'C',length:'1075B',create:'2020-03-29 11:06:46'}
-      ]
+      form:{uid: '', pid: '', judge: '16', language: '21'},
+      form2:{uid: '', pid: '', judge: '', language: ''},
+      pageSize: 10,
+      pageNum:0,
+      judgeResult:judge_result,
+      languageList:lang,
+      langName:lang_name,
+      pNum:JSON.parse(localStorage.getItem('pNum')),
+      num:ascii,
     }
   },
+  created() {
+    this.load(1)
+  },
   methods: {
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    load(page){
+      let query={}
+      query.page = page
+      query.contest_id = parseInt(this.$route.params.contestId)
+      query.user_id = this.form2.uid
+      query.problem_id = ''
+      if(this.form2.judge==='16'){
+        query.result = ''
+      }else{
+        query.result = this.form2.judge
+      }
+      if(this.form2.language==='21'){
+        query.language = ''
+      }else{
+        query.language = this.form2.language
+      }
+      let _this = this
+      this.pNum.forEach(function (item, index) {
+        if(_this.form2.pid===item.num){
+          query.problem_id=item.id
+          return;
+        }
+      });
+      console.log(query)
+      this.$store.dispatch('shixunStore/getTrainingSearchStatus',query).then(res=>{
+        console.log(res)
+      })
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    search(){
+      this.pageNum = 1
+      this.form2 = this.form
+      this.load(1)
+    },
+    handleCurrentChange(page) {
+      this.pageNum = page
+      this.load(page)
+    },
+    toProblem(num){
+      let problem_id
+      this.pNum.forEach(function (item, index) {
+        if(num===item.num){
+          problem_id = item.id
+        }
+      });
+      this.$router.push({name:'shixun-homework-problem',params:{problemId:problem_id}})
     }
   }
 }

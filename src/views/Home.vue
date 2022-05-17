@@ -88,28 +88,28 @@
             class="page">
         </el-pagination>
 
-        <el-dialog title="创建课堂" :visible.sync="dialog" width="35%" >
-          <el-form label-width="80px" size="small" :model="addForm">
-            <el-form-item label="课堂名称:">
+        <el-dialog title="创建课堂" :visible.sync="dialog" width="35%" :before-close="addClose">
+          <el-form label-width="100px" size="small" :model="addForm" :rules="rules" ref="addForm">
+            <el-form-item label="课堂名称:" prop="title">
               <el-input autocomplete="off" v-model="addForm.title"></el-input>
             </el-form-item>
-            <el-form-item label="结束时间:">
+            <el-form-item label="结束时间:" prop="end_time">
               <el-date-picker type="date" placeholder="请选择日期" v-model="addForm.end_time" style="width: 100%;" value-format="yyyy-MM-dd"></el-date-picker>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialog = false">取 消</el-button>
+            <el-button @click="addClose">取 消</el-button>
             <el-button type="primary" @click="add">确 定</el-button>
           </div>
         </el-dialog>
-        <el-dialog title="加入课堂" :visible.sync="dialog2" width="35%" >
-          <el-form label-width="100px" size="small" :model="joinForm">
-            <el-form-item label="课堂邀请码:">
+        <el-dialog title="加入课堂" :visible.sync="dialog2" width="35%" :before-close="joinClose">
+          <el-form label-width="100px" size="small" :model="joinForm" :rules="rules2" ref="joinForm">
+            <el-form-item label="课堂邀请码:" prop="invite_code">
               <el-input autocomplete="off" v-model="joinForm.invite_code"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="dialog2 = false">取 消</el-button>
+            <el-button @click="joinClose">取 消</el-button>
             <el-button type="primary" @click="join">确 定</el-button>
           </div>
         </el-dialog>
@@ -149,8 +149,8 @@ export default {
       avatarSize: 'large',
       options: [{index: 0, name: "全部" },{index: 1, name: "我管理的" },{index: 2, name: "我学习的" }],
       options2: [{index: 3, name: "全部" },{index: 4, name: "正在进行" },{index: 5, name: "已结束" }],
-      addForm:{},
-      joinForm:{},
+      addForm:{title:'',end_time:''},
+      joinForm:{invite_code:''},
       input: '',
       input2: '',
       isSearch:false,
@@ -161,7 +161,44 @@ export default {
       pageSize: 8,
       pageNum: 1,
       query:{},
-      src:[]
+      src:[],
+      rules: {
+        title: [
+          {required: true, message: '请输入课堂名称', trigger: 'blur'},
+          {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur'},
+          {
+            validator: function(rule, value, callback) {
+              if (/^[A-Za-z0-9-_\u4e00-\u9fa5]{4,30}$/.test(value) == false) {
+                callback(new Error("只能输入中英文，数字，‘-’，‘_’"));
+              } else {
+                //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        end_time:[
+          {required: true, message: '请输入课堂名称', trigger: 'blur'},
+        ]
+      },
+      rules2:{
+        invite_code:[
+          {required: true, message: '请输入邀请码', trigger: 'blur'},
+          {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur'},
+          {
+            validator: function(rule, value, callback) {
+              if (/^[A-Za-z0-9]{4,40}$/.test(value) == false) {
+                callback(new Error("只能输入英文，数字"));
+              } else {
+                //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ]
+      }
     }
   },
   mounted() {
@@ -171,8 +208,7 @@ export default {
     this.spanArr2[0].style.color = "#4cacff"
   },
   created(){
-    this.query.page = 1
-    this.$store.dispatch('course/getCourseAll', this.query).then(res=>{});
+    this.load(1)
   },
   computed: {
     ...mapGetters({
@@ -187,6 +223,9 @@ export default {
     }),
   },
   methods: {
+    load(page){
+      this.$store.dispatch('course/getCourseAll', {page:page}).then(res=>{});
+    },
     handleCurrentChange(pageNum){
       this.pageQuery(pageNum);
     },
@@ -276,23 +315,28 @@ export default {
             break
         }
       }
-
     },
     add(){
-      if(this.addForm.title && this.addForm.end_time){
-        this.$store.dispatch('course/postCourseInsert',this.addForm).then(res=>{
-          this.dialog = false
-          location.reload()
-        });
-      }else{
-        this.$message.error('请输入有效字符')
-      }
+      this.$refs['addForm'].validate((valid) => {
+        if(valid){
+          this.$store.dispatch('course/postCourseInsert',this.addForm).then(res=>{
+            this.dialog = false
+            this.$message.success('创建课堂成功！')
+            this.load(1)
+          });
+        }
+      });
     },
     join(){
-      this.$store.dispatch('course/postCourseJoin',this.joinForm).then(res=>{
-        this.dialog2 = false
-        location.reload()
-      })
+      this.$refs['joinForm'].validate((valid) => {
+        if(valid){
+          this.$store.dispatch('course/postCourseJoin',this.joinForm).then(res=>{
+            this.dialog2 = false
+            this.$message.success('加入课堂成功！')
+            this.load(1)
+          })
+        }
+      });
     },
     search(page){
       this.$store.dispatch('course/getIndexSearch',{title:this.input,page:page}).then(res=>{
@@ -308,6 +352,18 @@ export default {
             this.spanArr2[i].style.color = "#303133";
           }
         }
+      })
+    },
+    addClose(){
+      this.dialog = false
+      this.$nextTick(() => {
+        this.$refs["addForm"].resetFields();
+      });
+    },
+    joinClose(){
+      this.dialog2 = false
+      this.$nextTick(()=>{
+        this.$refs["joinForm"].resetFields();
       })
     }
   }

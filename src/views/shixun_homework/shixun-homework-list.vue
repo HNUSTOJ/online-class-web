@@ -14,7 +14,7 @@
         <el-table-column prop="contest_id" label="作业编号" align="center" width="100"></el-table-column>
         <el-table-column label="作业标题" align="center">
           <template slot-scope="scope">
-            <el-button type="text" @click="open">{{ scope.row.title }}</el-button>
+            <el-button type="text" @click="open(scope.row)">{{ scope.row.title }}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center" width="200">
@@ -96,8 +96,8 @@ export default {
       this.input2 = this.input
       this.load(1,this.input2)
     },
-    open(){
-      this.$router.push({name:'shixun-homework-info',params:{cid:'123'}})
+    open(item){
+      this.$router.push({name:'shixun-homework-info',params:{contestId:item.contest_id},query:{info:JSON.stringify(item)}})
     },
     edit(id){
       this.$router.push({name:'shixun-homework-edit',params:{contestId:id}})

@@ -12,9 +12,11 @@ const Attendance = 'attendance/'
 //登录路径
 const Login ='admin/'
 
-
 //实训作业路径
 const Training = 'training/'
+
+//文件资源路径
+const File = 'file/'
 
 
 //登录接口
@@ -190,6 +192,16 @@ export function getTrainingContestList(data){
     return request(Training + 'contest_list', {course_id:data.id,page:data.page,title:data.title}, "get")
 }
 
+//获取全部正在进行实训作业（搜索）
+export function getTrainingContestListIng(data){
+    return request(Training + 'contest_list/ing', {course_id:data.id,page:data.page,title:data.title}, "get")
+}
+
+//获取全部已结束实训作业（搜索）
+export function getTrainingContestListEnd(data){
+    return request(Training + 'contest_list/end', {course_id:data.id,page:data.page,title:data.title}, "get")
+}
+
 //获取题目编号数据
 export function getTrainingProblemTitle(data){
     return request(Training + 'problem_title', {problem_id:data.problem_id}, "get")
@@ -198,6 +210,21 @@ export function getTrainingProblemTitle(data){
 //获取实训编辑信息
 export function getTrainingEditInfo(data){
     return request(Training + 'eidt_info', {contest_id:data.id}, "get")
+}
+
+//获取实训详细作业
+export function getTrainingContestInfo(data){
+    return request(Training + 'contest_info', {contest_id:data.id}, "get")
+}
+
+//获取实训的问题
+export function getTrainingProblem(data){
+    return request(Training + 'problem', {problem_id:data.id}, "get")
+}
+
+//获取实训作业提交状态（搜索）
+export function getTrainingSearchStatus(data){
+    return request(Training + 'search/status', data, "get")
 }
 
 //创建实训作业
@@ -215,9 +242,20 @@ export function postTrainingDelete(data){
     return request(Training + 'delete', {contest_id:data.id}, "post")
 }
 
+//文件资源
+export function postFileUploadOne(data){
+    return request(File + 'upload/one', {courseid:data.id,title:data.title,private:data.private,file:data.file}, "file")
+}
 
+//获取文件资源（搜索）
+export function getFileResources(data){
+    return request(File + 'resources', {courseid:data.id,page:data.page,title:data.title}, "get")
+}
 
-
+//文件资源删除
+export function postFileDelete(data){
+    return request(File + 'delete', {courseid:data.id,url:data.url}, "post")
+}
 
 
 

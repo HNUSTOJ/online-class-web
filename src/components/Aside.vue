@@ -5,7 +5,7 @@
            :collapse-transition="false"
            :collapse="isCollapse"
            router
-           :default-active="$route.path"
+           :default-active="navLeftActive"
   >
     <div class="divHeader">
       <img src="../assets/logo.png" alt="">
@@ -69,7 +69,7 @@
       <i class="el-icon-folder-opened"></i>
       <span slot="title">文件资源</span>
     </el-menu-item>
-    <el-menu-item :index="`/course/${id}/file_category`">
+    <el-menu-item :index="`/course/${id}/video`">
       <i class="el-icon-film"></i>
       <span slot="title">视频资源</span>
     </el-menu-item>
@@ -77,36 +77,6 @@
       <i class="el-icon-pie-chart"></i>
       <span slot="title">竞赛代码</span>
     </el-menu-item>
-<!--    <el-submenu index="1">-->
-<!--      <template slot="title">-->
-<!--        <i class="el-icon-document"></i>-->
-<!--        <span slot="title">作业管理</span>-->
-<!--      </template>-->
-<!--        <el-menu-item :index="`/course/${id}/shixun_homework`" v-if="permissions === role.isTeacher">-->
-<!--          <span slot="title">实训作业</span>-->
-<!--        </el-menu-item>-->
-<!--      <el-menu-item :index="`/course/${id}/shixun_homework_stu`" v-if="permissions === ''||permissions === '0'||permissions === null">-->
-<!--        <span slot="title">实训作业</span>-->
-<!--      </el-menu-item>-->
-<!--        <el-menu-item :index="`/course/${id}/common_homework`" v-if="permissions === role.isTeacher">-->
-<!--          <span slot="title">普通作业</span>-->
-<!--        </el-menu-item>-->
-<!--        <el-menu-item :index="`/course/${id}/common_homework_stu`" v-if="permissions === ''||permissions === '0'||permissions === null">-->
-<!--          <span slot="title">普通作业</span>-->
-<!--        </el-menu-item>-->
-<!--    </el-submenu>-->
-<!--    <el-submenu index="2">-->
-<!--      <template slot="title">-->
-<!--        <i class="el-icon-folder-opened"></i>-->
-<!--        <span slot="title">资源管理</span>-->
-<!--      </template>-->
-<!--      <el-menu-item :index="`/course/${id}/file`">-->
-<!--        <span slot="title">文件资源</span>-->
-<!--      </el-menu-item>-->
-<!--      <el-menu-item :index="`/course/${id}/file_category`">-->
-<!--        <span slot="title">文件分类</span>-->
-<!--      </el-menu-item>-->
-<!--    </el-submenu>-->
   </el-menu>
 </template>
 
@@ -119,7 +89,15 @@ export default {
     ...mapGetters({
       role: 'loginStore/role',
       permissions:'loginStore/permissions',
-    })
+    }),
+    navLeftActive: function() {
+      const {meta, path} = this.$route
+      if(meta.activeMenu){
+        let pre = '/course/' + this.$route.params.courseId + meta.activeMenu
+        return pre
+      }
+      return path
+    },
   },
   created() {
     //this.Data = this.itemData;

@@ -211,6 +211,7 @@ export default {
     },
     inputBlur(){
       this.problem_list = this.problem.split(',')
+      console.log(this.problem_list)
       this.$store.dispatch('shixunStore/getProblemTitle',{problem_id:this.problem_list}).then(res=>{
         if(res.code === -4){
           this.$message.warning(res.msg)

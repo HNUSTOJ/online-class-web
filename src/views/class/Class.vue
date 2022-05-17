@@ -6,7 +6,7 @@
         <el-button style="margin-left: 5px" type="primary" @click="search(1)">搜索</el-button>
       </div>
       <div>
-        <el-button type="primary" @click="addclass">新增班级
+          <el-button type="primary" @click="addClass">新增班级
           <i class="el-icon-circle-plus-outline"></i>
         </el-button>
       </div>
@@ -47,7 +47,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">取 消</el-button>
-        <el-button type="primary" @click="addconfirm">确 定</el-button>
+        <el-button type="primary" @click="addConfirm">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="编辑班级" :visible.sync="dialog2" width="35%" :before-close="close2">
@@ -58,7 +58,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close2">取 消</el-button>
-        <el-button type="primary" @click="editconfirm">确 定</el-button>
+        <el-button type="primary" @click="editConfirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -108,6 +108,10 @@ export default {
       this.query.id = this.$route.params.courseId;
       this.query.page = 1;
       this.$store.dispatch('classStore/getClassList', this.query).then(res=>{
+        if(res.code === -2){
+          this.$router.push({name:'Home'})
+          this.$message.error(res.msg)
+        }
       });
     },
     handleCurrentChange(pageNum){
@@ -126,10 +130,10 @@ export default {
       localStorage.setItem('className',name)
       this.$router.push({name:'classInfo',params:{classId:id}})
     },
-    addclass(){
+      addClass(){
       this.dialog = true
     },
-    addconfirm(){
+    addConfirm(){
       this.$refs['insertForm'].validate((valid) => {
         if(valid){
           this.dialog = false
@@ -149,7 +153,7 @@ export default {
       this.dialog2 = true
       this.editForm = {class_id:row.class_id,class_name:row.class_name}
     },
-    editconfirm(){
+    editConfirm(){
       this.$refs['editForm'].validate((valid) => {
         if(valid){
           this.$store.dispatch('classStore/postClassEdit', this.editForm).then(res=>{
