@@ -14,8 +14,12 @@
 
 
     <el-table :data="classList" border stripe :header-cell-class-name="headerBg" :default-sort = "{prop: 'class_id', order: 'ascending'}" style="font-size: 13px">
-      <el-table-column prop="class_id" label="ID" width="80" align="center" sortable></el-table-column>
-      <el-table-column prop="class_name" label="分班名称" width="300" align="center"></el-table-column>
+      <el-table-column label="ID" width="80" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.$index}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="class_name" label="分班名称" width="300" align="center" sortable></el-table-column>
       <el-table-column prop="class_num" label="学生成员" width="100" align="center"></el-table-column>
       <el-table-column prop="user_name" label="管理教师" align="center"></el-table-column>
       <el-table-column prop="invite_code" label="邀请码" align="center"></el-table-column>
@@ -89,13 +93,24 @@ export default {
       rules: {
         class_name: [
           {required: true, message: '请输入班级名称', trigger: 'blur'},
-          {min: 3, max: 30, message: '长度在 3 到 30 个字符', trigger: 'blur'}
+          {min: 3, max: 30, message: '长度在 3 到 30 个字符', trigger: 'blur'},
+          {
+            validator: function(rule, value, callback) {
+              if (/^[A-Za-z0-9-_\u4e00-\u9fa5]{4,30}$/.test(value) == false) {
+                callback(new Error("只能输入中英文，数字，‘-’，‘_’"));
+              } else {
+                //校验通过
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
         ],
       }
     }
   },
   created() {
-    this.load()
+    this.load(1,'')
   },
   computed: {
     ...mapGetters({
@@ -104,33 +119,22 @@ export default {
     })
   },
   methods:{
-    load(){
-      this.query.id = this.$route.params.courseId;
-      this.query.page = 1;
-      this.$store.dispatch('classStore/getClassList', this.query).then(res=>{
-        if(res.code === -2){
-          this.$router.push({name:'Home'})
-          this.$message.error(res.msg)
-        }
+    load(page,input){
+      this.query.id = parseInt(this.$route.params.courseId);
+      this.query.page = page;
+      this.query.name = input
+      this.$store.dispatch('classStore/getClassSearch', this.query).then(res=>{
       });
     },
     handleCurrentChange(pageNum){
-      if(this.isSearch){
-        this.$store.dispatch('classStore/getClassSearch',{page:pageNum,id:this.$route.params.courseId,name:this.input2}).then(res=>{
-          this.pageNum = pageNum
-        })
-      }else{
-        this.pageNum=pageNum
-        this.query.id = this.$route.params.courseId;
-        this.query.page = pageNum;
-        this.$store.dispatch('classStore/getClassList', this.query).then(res=>{});
-      }
+      this.pageNum = pageNum
+      this.load(pageNum,this.input2)
     },
     detail(id,name){
       localStorage.setItem('className',name)
       this.$router.push({name:'classInfo',params:{classId:id}})
     },
-      addClass(){
+    addClass(){
       this.dialog = true
     },
     addConfirm(){
@@ -141,7 +145,9 @@ export default {
             if(res.code === 200){
               this.insertForm = {course_id:parseInt(this.$route.params.courseId) }
               this.$message.success(res.msg)
-              this.load()
+              this.input2 = ''
+              this.pageNum = 1
+              this.load(1,'')
             }else{
               this.$message.error(res.msg)
             }
@@ -169,17 +175,15 @@ export default {
       });
     },
     search(page){
-      this.$store.dispatch('classStore/getClassSearch',{page:page,id:this.$route.params.courseId,name:this.input}).then(res=>{
-        this.pageNum = page
-        this.isSearch = true
-        this.input2 = this.input
-      })
+      this.pageNum = page
+      this.input2 = this.input
+      this.load(page,this.input2)
     },
     del(id){
       this.$store.dispatch('classStore/postClassDelete',{class_id:id}).then(res=>{
         if(res.code === 200){
           this.$message.success(res.msg)
-          this.load()
+          this.load(1,'')
         }else{
           this.$message.error(res.msg)
         }

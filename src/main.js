@@ -17,13 +17,11 @@ Vue.use(vueFilePreview,{
   worker:'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.288/build/pdf.worker.min.js',//pdf.work插件
 });
 
-import vueMiniPlayer from 'vue-mini-player'
-import 'vue-mini-player/lib/vue-mini-player.css'
-Vue.use(vueMiniPlayer)
 
 import VueCoreVideoPlayer from 'vue-core-video-player'
-Vue.use(VueCoreVideoPlayer)
-
+Vue.use(VueCoreVideoPlayer,{
+  lang:'zh-CN'
+})
 
 Vue.config.productionTip = false
 Vue.use(ElementUI,{size: "mini"});

@@ -5,7 +5,7 @@ import {
     getClassListInfo,
     getClassSearch,
     getClassSearchInfo, getCourseClass,
-    postClassDelete, postClassEdit,
+    postClassDelete, postClassDeleteStu, postClassEdit,
     postClassInsert, postClassMove
 } from "@/api/index";
 
@@ -119,6 +119,9 @@ const actions = {
     },
     postClassMove ({ commit }, data){
         return requestProcess(postClassMove, data, ()=>{});
+    },
+    postClassDeleteStu ({ commit }, data){
+        return requestProcess(postClassDeleteStu, data, ()=>{});
     },
 }
 

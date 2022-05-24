@@ -4,7 +4,7 @@
       <div v-for="item in list">
         <el-card shadow="hover" style="margin: 10px 0">
           <div style="margin: 10px 0">
-            <span>{{ item.sign_name }}</span>
+            <el-button type="text" style="font-size: 16px" @click="info(item.sign_id,item.sign_name)">{{ item.sign_name }}</el-button>
             <el-tag type="success">进行中</el-tag>
             <div style="float: right">
               <el-dropdown trigger="click" style="cursor: pointer;">

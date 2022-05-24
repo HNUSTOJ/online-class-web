@@ -6,6 +6,8 @@ import attendanceStore from './modules/attendance'
 import loginStore from './modules/login'
 import shixunStore from './modules/shixun'
 import fileStore from './modules/file'
+import commonStore from './modules/common'
+import videoStore from './modules/video'
 
 Vue.use(Vuex)
 
@@ -23,6 +25,8 @@ export default new Vuex.Store({
         attendanceStore,
         loginStore,
         shixunStore,
-        fileStore
+        fileStore,
+        commonStore,
+        videoStore
     }
 })

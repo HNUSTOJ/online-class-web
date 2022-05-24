@@ -6,7 +6,7 @@
       </el-input>
       <el-button icon="el-icon-plus" @click="upload"  style="margin-left: 5px" v-if="permissions==='1'"></el-button>
     </div>
-    <el-card>
+    <el-card v-loading="loading" element-loading-text="文件下载中.....">
 <!--      <xd-file-list-preview :show-close="showClose" :list="list" @remove="handleRemoveClick"></xd-file-list-preview>-->
       <div v-if="!total">
         <el-empty :image-size="260"></el-empty>
@@ -18,16 +18,18 @@
               <div class="-icon">
                 <img src="../../assets/jpg.png" alt="icon" style="width:100%;height:100%" v-if="item.type.toLowerCase()==='jpg'||item.type.toLowerCase()==='jpeg'||item.type.toLowerCase()==='png'">
                 <img src="../../assets/pdf.png" alt="icon" style="width:100%;height:100%" v-else-if="item.type.toLowerCase()==='pdf'">
-                <img src="../../assets/ppt.png" alt="icon" style="width:100%;height:100%" v-else-if="item.type.toLowerCase()==='ppt'">
+                <img src="../../assets/ppt.png" alt="icon" style="width:100%;height:100%" v-else-if="item.type.toLowerCase()==='pptx'">
                 <img src="../../assets/word.png" alt="icon" style="width:100%;height:100%" v-else-if="item.type.toLowerCase()==='doc'||item.type.toLowerCase()==='docx'">
                 <img src="../../assets/xls.png" alt="icon" style="width:100%;height:100%" v-else-if="item.type.toLowerCase()==='xls'||item.type.toLowerCase()==='xlsx'">
                 <img src="../../assets/unkown.png" alt="icon" style="width:100%;height:100%" v-else>
               </div>
               <div class="-text">
-                <div class="-title tmp">{{item.name}}</div>
+                <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom" :open-delay="openDelay">
+                  <div class="tmp">{{item.name}}</div>
+                </el-tooltip>
                 <div style="display: flex">
                   <div class="-link" @click="preview(item)">预览</div>
-                  <div class="-link" style="margin-left: 6px">下载</div>
+                  <div class="-link" style="margin-left: 6px" @click="download(item.url)">下载</div>
                 </div>
               </div>
               <i class="fileIconfont iconyduicuowushixin" @click.stop="handleRemoveClick(item.url)" v-if="permissions==='1'"></i>
@@ -46,7 +48,7 @@
       </div>
     </el-card>
     <el-dialog title="上传资源" :visible.sync="dialogFormVisible" width="30%" :before-close="close">
-      <el-form label-width="110px" size="small" :model="fileForm" ref="editForm">
+      <el-form label-width="110px" size="small" :model="fileForm" ref="fileForm" v-loading="loading2" element-loading-text="文件上传中.....">
         <el-form-item label="文件命名：" prop="fileName">
           <el-input placeholder="请输入文件名" v-model="fileForm.fileName"></el-input>
         </el-form-item>
@@ -54,33 +56,35 @@
           <el-switch v-model="fileForm.private" active-color="#C0CCDA" inactive-color="#13ce66" active-value="0" inactive-value="1"></el-switch>
           <span style="font-size: 12px">（开启后不允许用户在线下载，默认开启）</span>
         </el-form-item>
+        <el-upload
+            class="upload-demo"
+            drag
+            ref="upload"
+            multiple
+            action=""
+            accept=".pdf,.jpg,.jpeg,.png,.docx,.pptx,.xls,.xlsx"
+            :with-credentials="true"
+            :http-request="httpRequest"
+            :on-exceed="handleExceed"
+            :limit="limit"
+            :file-list="sendFile"
+            :data="fileData"
+            :auto-upload="false"
+            style="text-align: center">
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">
+            <em>点击上传</em>
+            (支持上传pdf，png，jpeg，jpg，docx，pptx，xls，xlsx等文件)
+          </div>
+        </el-upload>
       </el-form>
-      <el-upload
-          class="upload-demo"
-          drag
-          ref="upload"
-          multiple
-          action=""
-          :with-credentials="true"
-          :http-request="httpRequest"
-          :on-exceed="handleExceed"
-          :limit="limit"
-          :file-list="sendFile"
-          :data="fileData"
-          :auto-upload="false"
-          style="text-align: center">
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">
-          <em>点击上传</em>
-          (支持上传pdf，png，jpeg，jpg，doc，docx，ppt，pptx，xls等文件)
-        </div>
-      </el-upload>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">取 消</el-button>
         <el-button type="primary" @click="uploadFile">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="PDF预览" :visible.sync="pdf.pdfDialog" width="70%" :before-close="pdfClose">
+    <el-dialog title="预览" :visible.sync="pdf.pdfDialog" width="70%" :before-close="pdfClose" :destroy-on-close="destroy">
       <el-button-group>
         <el-button type="primary" icon="el-icon-arrow-left" size="mini" @click="prePage">上一页</el-button>
         <el-button type="primary" size="mini" @click="nextPage">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
@@ -88,12 +92,16 @@
       <div style="marginTop: 10px; color: #409EFF">{{ pdf.page }} / {{ pdf.pageTotalNum }}</div>
       <pdf :page="pdf.page" :src="pdf.url" @progress="pdf.loadedRatio = $event" @num-pages="pdf.pageTotalNum=$event"></pdf>
     </el-dialog>
-    <el-dialog title="excel预览" :visible.sync="excel.dialog" width="90%" :before-close="excelClose">
-<!--      <base-excel ref="child"></base-excel>-->
+    <el-dialog title="预览" :visible.sync="excel.dialog" width="90%" :before-close="excelClose" :destroy-on-close="destroy">
+      <base-excel ref="excelChild"></base-excel>
     </el-dialog>
-    <el-dialog title="word预览" :visible.sync="word.dialog" width="90%">
+    <el-dialog title="预览" :visible.sync="word.dialog" width="90%" :before-close="wordClose" :destroy-on-close="destroy">
       <base-word ref="wordChild"></base-word>
     </el-dialog>
+    <el-dialog title="预览" :visible.sync="pptx.dialog" width="80%" :before-close="pptxClose" :destroy-on-close="destroy">
+      <pptx ref="pptxChild" v-if="pptx.dialog"></pptx>
+    </el-dialog>
+    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="[url]"/><!--图片预览-->
   </div>
 </template>
 
@@ -101,17 +109,24 @@
 import {mapGetters} from "vuex";
 import {iconData} from "@/assets/contact";
 import pdf from 'vue-pdf'
-// import baseExcel from './base'
+import baseExcel from './excel'
 import baseWord from './word'
+import pptx from "@/views/file/pptx";
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+import axios from 'axios'
 export default {
   name: "File",
   components:{
     pdf,
-    // baseExcel,
-    baseWord
+    baseExcel,
+    baseWord,
+    pptx,
+    ElImageViewer
   },
   data() {
     return {
+      showViewer: false, // 图片显示查看器
+      url:'',// 图片显示url
       pdf:{
         url: '',
         page: 1,
@@ -119,14 +134,11 @@ export default {
         loadedRatio: 0,
         pdfDialog:false,
       },
-      excel:{
-        dialog:false,
-      },
-      word:{
-        dialog:false,
-      },
+      excel:{dialog:false},
+      word:{dialog:false},
+      pptx:{dialog:false},
       showClose: true,
-      limit: 1,
+      limit: 2,
       input:'',
       input2:'',
       dialogFormVisible:false,
@@ -139,6 +151,11 @@ export default {
       pageSize:16,
       fileData:null,
       query:{},
+      openDelay:500,
+      destroy:true,
+      loading:false,
+      loading2:false,
+      header:{'token':localStorage.getItem('token')}
     }
   },
   computed:{
@@ -168,9 +185,10 @@ export default {
       })
     },
     httpRequest(param) {
+      this.loading2 = true
       let fileObj = param.file // 相当于input里取得的files
       const size = fileObj.size/1024/1024
-      if(size>50){
+      if(size>150){
         this.$notify.warning({
           title:'警告',
           message:'大小必须小于50M'
@@ -179,7 +197,7 @@ export default {
       }
       let fd = new FormData()// FormData 对象
       fd.append('file', fileObj)// 文件对象
-      this.fileData = {id:this.$route.params.courseId,title:this.fileForm.fileName,file:fd,private:this.fileForm.private}
+      this.fileData = {courseid:this.$route.params.courseId,title:this.fileForm.fileName,file:fd,private:this.fileForm.private}
       this.$store.dispatch('fileStore/postFileUploadOne',this.fileData).then(res=>{
         if(res.code === 200){
           this.close()
@@ -188,6 +206,7 @@ export default {
         }else{
           this.$message.warning(res.msg)
         }
+        this.loading2 = false
       })
     },
     uploadFile(){
@@ -217,30 +236,53 @@ export default {
       this.load(this.pageNum,this.input2)
     },
     preview(item){//预览文件
-      // let name = this.fileList[index].url
-      // let i = name.lastIndexOf('\.')
-      // let footer = name.substring(i + 1, name.length)
-      // let main = name.substring(0,i)
-      // main = main.replace(/\+/g,'%2B')
-      //     .replace(/ /g,'%20')
-      //     .replace(/\//g,'%2F')
-      //     .replace(/？/g,'%3F')
-      // console.log(index)
-      if(item.type === 'pdf'){
+      if(item.type.toLowerCase() === 'pdf'){
         this.pdf.pdfDialog = true
-        this.pdf.url = 'http://152.136.122.135:8848/file/show?url='+encodeURIComponent(item.url)
-        console.log(this.pdf.url)
-      }else if(item.type === 'xls'||item.type === 'xlsx'){
+        let loadingTask = pdf.createLoadingTask({
+          url:'http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url),
+          httpHeaders:{'token':localStorage.getItem('token')}
+        })
+        this.pdf.url = loadingTask
+      }else if(item.type.toLowerCase() === 'xls'||item.type.toLowerCase() === 'xlsx'){
         this.excel.dialog =true
         this.$nextTick(()=>{
-          this.$refs.child.loadRemoteFile('http://152.136.122.135:8848/file/show?url='+encodeURIComponent(item.url));
+          this.$refs.excelChild.excel('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url));
         })
-      }else if(item.type === 'docx'||item.type === 'doc'){
+      }else if(item.type.toLowerCase() === 'docx'||item.type.toLowerCase() === 'doc'){
         this.word.dialog = true
         this.$nextTick(()=>{
-          this.$refs.wordChild.word('http://152.136.122.135:8848/file/show?url='+encodeURIComponent(item.url));
+          this.$refs.wordChild.word('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url));
+        })
+      }else if(item.type.toLowerCase()==='jpg'||item.type.toLowerCase()==='jpeg'||item.type.toLowerCase()==='png'){
+        let url = this.imgSrc('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url))
+        url.then(res =>{///////////////////获取promise对象中的value
+          this.onPreview(res)
+        } )
+      }else if(item.type.toLowerCase()==='pptx'){
+        this.pptx.dialog = true
+        this.$nextTick(()=>{
+          this.$refs.pptxChild.pptx('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url));
         })
       }
+    },
+    async imgSrc(url) {
+      let that = this;
+      let urlsrc = "";  //通过一个参数 从下面接收
+
+      // 通过图片地址获取图片，从新获取图片
+      var config = {
+        method: "get",
+        responseType: "arraybuffer",
+        url: url,
+        headers: {token:localStorage.getItem('token')}
+      };
+      // 重新获取请求，获取的是base64位的图片
+      await axios(config).then((response) => {
+        //因为从这里return老是报错
+        urlsrc = "data:image/png;base64," +
+            btoa(new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte) + "", ""));
+      });
+      return urlsrc;
     },
     handleRemoveClick(url) {//删除文件
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -271,9 +313,73 @@ export default {
     },
     excelClose(){
       this.excel.dialog = false
-      this.$nextTick(()=>{
-        this.$refs.child.clear();
+      // this.$nextTick(()=>{
+      //   this.$refs.excelChild.excelClear();
+      // })
+    },
+    wordClose(){
+      this.word.dialog = false
+      // this.$nextTick(()=>{
+      //   this.$refs.wordChild.wordClear();
+      // })
+    },
+    pptxClose(){
+      this.pptx.dialog = false
+      // this.$nextTick(()=>{
+      //   this.$refs.pptxChild.close();
+      // })
+    },
+    onPreview(url) {
+      this.showViewer = true
+      this.url = url
+    },
+    // 关闭查看器
+    closeViewer() {
+      this.showViewer = false
+    },
+    download(url){
+      //window.open('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(url))
+      this.loading = true
+      this.$store.dispatch('fileStore/getFileDownload',{url:url}).then(res=>{
+        const link=document.createElement('a');
+        try{
+          let blob =  res
+          let _fileName = url.substr(url.lastIndexOf('/')+1,url.length)
+          link.style.display='none';
+          // 兼容不同浏览器的URL对象
+          const urls = window.URL || window.webkitURL || window.moxURL;
+          link.href=urls.createObjectURL(blob);
+          link.download = _fileName;
+          link.click();
+          window.URL.revokeObjectURL(urls);
+          this.loading = false
+        }catch (e) {
+          this.$message.error('下载文件出错,'+e)
+        }
+      }).catch(()=>{
+        this.$message.error('下载文件出错！')
       })
+      // axios.get('http://152.136.122.135:8848/file/download',{
+      //   responseType: "blob",
+      //   params:{url:url}
+      // }).then(({data})=> {
+      //   const link=document.createElement('a');
+      //   try{
+      //     let blob =  data
+      //     let _fileName = url.substr(url.lastIndexOf('/')+1,url.length)
+      //     link.style.display='none';
+      //     // 兼容不同浏览器的URL对象
+      //     const urls = window.URL || window.webkitURL || window.moxURL;
+      //     link.href=urls.createObjectURL(blob);
+      //     link.download = _fileName;
+      //     link.click();
+      //     window.URL.revokeObjectURL(urls);
+      //   }catch (e) {
+      //     this.$message.error('下载文件出错,'+e)
+      //   }
+      // }).catch(()=>{
+      //   this.$message.error('下载文件出错')
+      // })
     }
   }
 }
@@ -352,6 +458,7 @@ export default {
   display: block;
 }
 .tmp{
+  width: 205px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;

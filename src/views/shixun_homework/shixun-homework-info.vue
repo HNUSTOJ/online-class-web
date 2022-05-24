@@ -1,8 +1,8 @@
 <template>
   <div>
     <div style="text-align: center;margin-top: 20px">
-      <h3>Contest{{contest.contest_id}} - {{ contest.title }}</h3>
-      <p></p>
+      <h3>Contest{{contest.contest_id}} - {{ contest.title }}</h3><br>
+      <p v-html="contest.description"></p>
       <br>Start Time: <span style="color: #993399; ">{{ contest.start_time }}&nbsp;&nbsp;</span>
       End Time: <span style="color: #993399; ">{{ contest.end_time }}</span><br>
       Current Time: <span style="color: #993399; "><span id="nowdate">{{ currentTime }}</span></span><br>
@@ -63,13 +63,27 @@ export default {
       contestInfo:'shixunStore/contestInfo'
     })
   },
+  mounted() {
+    this.currentTimes();
+  },
+  beforeDestroy() {
+    if (this.formatDate) {
+      clearInterval(this.formatDate); // 在Vue实例销毁前，清除时间定时器
+    }
+  },
   created() {
-    this.contest = JSON.parse(this.info)
+    this.contest = JSON.parse(sessionStorage.getItem('shixunInfo'))
     this.contest.start_time = moment(new Date(this.contest.start_time)).format('YYYY-MM-DD HH:mm:ss')
     this.contest.end_time = moment(new Date(this.contest.end_time)).format('YYYY-MM-DD HH:mm:ss')
     this.load()
   },
   methods: {
+    currentTimes() {
+      setInterval(this.formatDate, 1000);
+    },
+    formatDate(){
+      this.currentTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+    },
     load(){
       let _this = this
       this.$store.dispatch('shixunStore/getTrainingContestInfo',{id:parseInt(this.contest.contest_id)}).then(res=>{

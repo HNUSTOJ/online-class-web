@@ -1,6 +1,6 @@
 import requestProcess from "@/utils/request-process";
 import {
-    getClassList, getFileResources, postFileDelete,
+    getClassList, getFileDownload, getFileResources, postFileDelete,
     postFileUploadOne
 } from "@/api/index";
 
@@ -38,6 +38,9 @@ const actions = {
         return requestProcess(getFileResources, data, res =>
             commit("setFileList", res)
         );
+    },
+    getFileDownload ({ commit }, data){
+        return requestProcess(getFileDownload, data, ()=>{});
     },
     postFileUploadOne ({ commit }, data){
         return requestProcess(postFileUploadOne, data, ()=>{});

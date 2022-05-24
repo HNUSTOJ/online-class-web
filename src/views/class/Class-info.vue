@@ -37,6 +37,13 @@
       <el-table-column prop="user_name" label="姓名" width="200" align="center"></el-table-column>
       <el-table-column prop="contact" label="手机号" align="center"></el-table-column>
       <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
+      <el-table-column label="操作" align="center" width="100">
+        <template slot-scope="scope">
+          <el-popconfirm title="这是一段内容确定删除吗？" style="margin-left: 10px" @confirm="deleteStu(scope.row.user_id)">
+            <el-button type="text" slot="reference">删除</el-button>
+          </el-popconfirm>
+        </template>
+      </el-table-column>
     </el-table>
     <div style="padding: 10px 0">
       <el-pagination
@@ -63,6 +70,7 @@ export default {
       pageSize: 8,
       headerBg: 'headerBg',
       userinfo: '',
+      userinfo2: '',
       chooseNum: 0,
       query:{},
       users:[]
@@ -76,33 +84,31 @@ export default {
     })
   },
   created() {
-    this.load()
+    this.load(1)
   },
   methods: {
-    load(){
+    load(page){
       this.query.id = this.$route.params.courseId;
-      this.query.page = 1;
+      this.query.page = page;
       this.query.classId = this.$route.params.classId;
-      this.$store.dispatch('classStore/getClassStu', this.query).then(res=>{});
-      this.$store.dispatch('classStore/getClassAll',{id:parseInt(this.$route.params.courseId)}).then(res=>{})
+      this.query.name = this.userinfo2
+      this.$store.dispatch('classStore/getClassSearchInfo',this.query).then(res=>{
+        if(res.code===200){
+          this.$store.dispatch('classStore/getClassAll',{id:parseInt(this.$route.params.courseId)}).then(res=>{})
+        }
+      })
     },
     goBack() {
       this.$router.push({name:'class'})
     },
     search(){
-      this.query.id = this.$route.params.courseId
-      this.query.classId = this.$route.params.classId
-      this.query.page = 1
       this.pageNum = 1
-      this.query.name = this.userinfo
-      this.$store.dispatch('classStore/getClassSearchInfo',this.query).then(res=>{//////////////有点小问题
-        console.log(res)
-      })
+      this.userinfo2 = this.userinfo
+      this.load(1)
     },
     handleCurrentChange(pageNum){
       this.pageNum=pageNum
-      this.$store.dispatch('classStore/getClassStu', {id:this.$route.params.courseId,classId:this.$route.params.classId,page:pageNum}).then(res=>{
-      });
+      this.load(pageNum)
     },
     handleCommand(command) {
       if(this.chooseNum){
@@ -113,9 +119,13 @@ export default {
           datas.user_id = this.users
           this.$store.dispatch('classStore/postClassMove', datas).then(res=>{
             if(res.code === 200){
-              location.reload()
+              this.$message.success('移动成功！')
+              this.load(1)
+              this.pageNum = 1
             }else if(res.code === -1){
               this.$message.warning(res.msg)
+            }else if(res.code === -4){
+              this.$message.error(res.msg)
             }
           })
         }else{
@@ -124,6 +134,19 @@ export default {
       }else{
         this.$message.warning('请选择您要移动的学生！')
       }
+    },
+    deleteStu(id){
+      this.$store.dispatch('classStore/postClassDeleteStu',{class_id:parseInt(this.$route.params.classId),user_id:id}).then(res=>{
+        if(res.code===200){
+          this.$message.success('删除学生成功！')
+          this.pageNum = 1
+          this.userinfo = ''
+          this.userinfo2 = ''
+          this.load(1)
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
     },
     handleSelectionChange(val){
       this.chooseNum = val.length

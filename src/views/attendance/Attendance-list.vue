@@ -4,7 +4,7 @@
     <div v-for="item in list">
       <el-card shadow="hover" style="margin: 10px 0">
         <div style="margin: 10px 0">
-          <span>{{ item.sign_name }}</span>
+          <el-button type="text" style="font-size: 16px" @click="info(item.sign_id,item.sign_name)">{{ item.sign_name }}</el-button>
           <el-tag v-if="compare(item.start_time,currentTime)">准备中</el-tag>
           <el-tag type="success" v-if="compare(currentTime,item.start_time)&&compare(item.end_time,currentTime)">进行中</el-tag>
           <el-tag type="danger" v-if="compare(currentTime,item.end_time)">已结束</el-tag>

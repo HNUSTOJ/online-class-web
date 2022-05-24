@@ -17,13 +17,23 @@ export default {
   },
   data() {
     return {
-      activeName: 'shixun-all'
+      activeName: sessionStorage.getItem('shixun-activeName')
     };
+  },
+  created() {
+    if(!sessionStorage.getItem('shixun-activeName')){
+      sessionStorage.setItem('shixun-activeName','shixun-all')
+      this.activeName = 'shixun-all'
+    }
   },
   methods: {
     handleClick(tab, event) {
+      sessionStorage.setItem('shixun-activeName',tab.name)
       this.$router.push({name:tab.name})
-    },
+    }
+  },
+  destroyed: function () {
+    sessionStorage.removeItem('shixun-activeName')
   }
 }
 </script>

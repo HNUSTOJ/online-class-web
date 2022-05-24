@@ -79,7 +79,9 @@ export default async function request (url, data, type) {
         } else if (type === 'form') {
             return (await service.post(url, data,{ headers: { 'Content-Type': 'application/json;charset=utf-8' , 'token':token} })).data
         } else if (type === 'file') {
-            return (await service.post(url, data.file,{ params: {courseid:data.courseid,title:data.title,private:data.private}, headers: { 'Content-Type': 'multipart/form-data' , 'token':token} })).data
+            return (await service.post(url, data.file,{ params: data, headers: { 'Content-Type': 'multipart/form-data' , 'token':token} })).data
+        } else if (type==='fileDownLoad'){
+            return (await service.get(url ,{ params: data, responseType: 'blob', headers: {'token':token} })).data
         } else{
             return res
         }

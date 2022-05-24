@@ -15,8 +15,14 @@ const Login ='admin/'
 //实训作业路径
 const Training = 'training/'
 
+//普通作业路径
+const Common = 'common/'
+
 //文件资源路径
 const File = 'file/'
+
+//视频资源路径
+const Video = 'video/'
 
 
 //登录接口
@@ -140,6 +146,11 @@ export function postClassMove(data){
     return request(Class + 'move', data, "form")
 }
 
+//删除班级人员
+export function postClassDeleteStu(data){
+    return request(Class + 'delete/stu', data, "form")
+}
+
 //签到
 //获取全部签到首页数据
 export function getAttendanceList(data){
@@ -242,9 +253,51 @@ export function postTrainingDelete(data){
     return request(Training + 'delete', {contest_id:data.id}, "post")
 }
 
+//普通作业
+//获取全部普通作业（搜索）
+export function getCommonList(data){
+    return request(Common + 'list', data, "get")
+}
+
+//获取普通作业详情
+export function getCommonInfo(data){
+    return request(Common + 'info', data, "get")
+}
+
+//获取普通作业提交情况
+export function getCommonSubmitInfo(data){
+    return request(Common + 'submit/info', data, "get")
+}
+
+//普通作业分班情况
+export function getCommonClass(data){
+    return request(Common + 'class', data, "get")
+}
+
+//创建普通作业
+export function postCommonCreate(data){
+    return request(Common + 'create', data, "form")
+}
+
+//修改普通作业
+export function postCommonEdit(data){
+    return request(Common + 'edit', data, "post")
+}
+
+//删除普通作业
+export function postCommonDelete(data){
+    return request(Common + 'delete', data, "post")
+}
+
+//普通作业文件资源上传
+export function postCommonUpload(data){
+    return request(File + 'common/upload', {course_id:data.course_id,job_id:data.job_id,file:data.file}, "file")
+}
+
 //文件资源
+//文件资源上传
 export function postFileUploadOne(data){
-    return request(File + 'upload/one', {courseid:data.id,title:data.title,private:data.private,file:data.file}, "file")
+    return request(File + 'upload/one', data, "file")
 }
 
 //获取文件资源（搜索）
@@ -257,9 +310,22 @@ export function postFileDelete(data){
     return request(File + 'delete', {courseid:data.id,url:data.url}, "post")
 }
 
+//文件资源下载
+export function getFileDownload(data){
+    return request(File + 'download', data, "fileDownLoad")
+}
 
+//普通专业文件资源下载
+//文件资源下载
+export function getFileDownloadJob(data){
+    return request(File + 'download/job', data, "fileDownLoad")
+}
 
-
+//视频资源
+//获取视频资源
+export function getVideoList(data){
+    return request(Video + 'list',data,"get")
+}
 
 
 

@@ -11,7 +11,11 @@
 
   </el-card>
   <el-table :data="list" border stripe :header-cell-class-name="headerBg">
-    <el-table-column prop="class_id" label="序号" width="80" align="center"></el-table-column>
+    <el-table-column label="序号" width="80" align="center">
+      <template slot-scope="scope">
+        <span>{{scope.$index}}</span>
+      </template>
+    </el-table-column>
     <el-table-column prop="class_name" label="分班名称" width="200" align="center"></el-table-column>
     <el-table-column prop="class_num" label="学生成员" width="100" align="center"></el-table-column>
     <el-table-column prop="user_name" label="管理教师" align="center"></el-table-column>

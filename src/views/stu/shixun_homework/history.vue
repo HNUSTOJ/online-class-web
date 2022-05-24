@@ -70,7 +70,8 @@ export default {
       })
     },
     openCard(item){
-      this.$router.push({name:'shixun-homework-info',params:{contestId:item.contest_id},query:{info:JSON.stringify(item)}})
+      sessionStorage.setItem('shixunInfo',JSON.stringify(item))
+      this.$router.push({name:'shixun-homework-info',params:{contestId:item.contest_id}})
     },
     handleSizeChange(pageSize){
       this.pageSize=pageSize

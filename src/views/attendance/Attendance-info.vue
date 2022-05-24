@@ -26,7 +26,7 @@
       <el-table :data="list" border stripe :header-cell-class-name="headerBg" style="font-size: 13px">
         <el-table-column prop="id" label="序号" width="100" align="center">
           <template slot-scope="scope">
-            <span>{{scope.$index}}</span>
+            <span>{{scope.$index+1}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="user_name" label="姓名" width="300" align="center"></el-table-column>
@@ -88,7 +88,7 @@ export default {
   },
   methods:{
     goBack() {
-      this.$router.push({name: 'all'})
+      this.$router.push({name: sessionStorage.getItem('sign-activeName')})
     },
     load(page,state){
       this.$store.dispatch('attendanceStore/getAttendanceInfoList',{page:page,sign_state:state,sign_id:this.$route.params.aid}).then(res=>{

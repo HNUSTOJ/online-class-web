@@ -11,22 +11,19 @@
           style="width: 30px; height: 30px;display:inline-block;vertical-align:-8px;margin-right: 6px;"
           :src="require('../assets/logo.png')"
           fit="fill"></el-image>
-      <span class="container-span">湖南科技大学在线实训课堂</span>
+      <span class="container-span">基于HNUSTOJ的在线实训课堂</span>
     </div>
 
 
-    <el-dropdown>
-      <div style="display: inline-block">
-        <span v-if="isLogin">{{ username }}</span>
-        <span v-else>登 录</span>
-        <i class="el-icon-arrow-down" style="margin-left: 5px"></i>
-      </div>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item style="padding: 5px 0" v-if="!isLogin">
-          <span class="el-dropdown-item-span" @click="login">登 录</span>
+    <el-dropdown style="width: 150px; cursor: pointer; text-align: right" trigger="click">
+      <span class="el-dropdown-link" v-if="isLogin">{{ username }}<i class="el-icon-arrow-down el-icon--right"></i></span>
+      <span class="el-dropdown-link" v-else>登 录<i class="el-icon-arrow-down el-icon--right"></i></span>
+      <el-dropdown-menu slot="dropdown" style="width: 100px; text-align: center">
+        <el-dropdown-item style="font-size: 14px; padding: 5px 0" v-if="!isLogin">
+          <span style="text-decoration: none" @click="login">登 录</span>
         </el-dropdown-item>
-        <el-dropdown-item style="padding: 5px 0">
-          <span class="el-dropdown-item-span" @click="logout">退 出</span>
+        <el-dropdown-item style="font-size: 14px; padding: 5px 0">
+          <span style="text-decoration: none" @click="logout">退 出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -77,19 +74,6 @@ export default {
 .el-breadcrumb{
   display: inline-block;
   margin-left: 10px;
-}
-.el-dropdown{
-  width: 70px;
-  cursor: pointer;
-  /*text-align: right;*/
-}
-.el-dropdown-menu{
-  width: 100px;
-  text-align: center;
-}
-.el-dropdown-item-span{
-  text-decoration: none;
-  font-size: 15px;
 }
 </style>
 

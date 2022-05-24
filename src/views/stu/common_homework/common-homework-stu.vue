@@ -16,13 +16,23 @@ export default {
   },
   data() {
     return {
-      activeName: 'common-all',
+      activeName: sessionStorage.getItem('common-activeName')
     };
+  },
+  created() {
+    if(!sessionStorage.getItem('common-activeName')){
+      sessionStorage.setItem('common-activeName','common-all')
+      this.activeName = 'common-all'
+    }
   },
   methods: {
     handleClick(tab, event) {
+      sessionStorage.setItem('common-activeName',tab.name)
       this.$router.push({name:tab.name})
     }
+  },
+  destroyed: function () {
+    sessionStorage.removeItem('common-activeName')
   }
 }
 </script>

@@ -61,7 +61,7 @@ export default {
   },
   data() {
     return {
-      activeName:'all',
+      activeName:sessionStorage.getItem('sign-activeName'),
       dialog: false,
       id:'',
       form:{
@@ -92,6 +92,12 @@ export default {
       }
     }
   },
+  created() {
+    if(!sessionStorage.getItem('sign-activeName')){
+      sessionStorage.setItem('sign-activeName','all')
+      this.activeName = 'all'
+    }
+  },
   mounted(){
     this.$store.dispatch('classStore/getClassAll',{id:parseInt(this.$route.params.courseId)}).then(res=>{})
   },
@@ -102,19 +108,27 @@ export default {
     found(){
       this.$refs['form'].validate((valid) => {
         if(valid){
-          //console.log(this.form)
-          this.$store.dispatch('attendanceStore/postAttendanceCreate',this.form).then(res=>{
-            if(res.code === 200){
-              this.$message.success('创建成功！')
-            }
-            this.close()
-            this.activeName = 'all'
-            this.$router.push({name:'all'})
-          })
+          let date1 = new Date(this.form.start_time);
+          let date2 = new Date(this.form.late_time);
+          let date3 = new Date(this.form.end_time);
+          if(date1<date2&&date2<date3){
+            this.$store.dispatch('attendanceStore/postAttendanceCreate',this.form).then(res=>{
+              if(res.code === 200){
+                this.$message.success('创建成功！')
+              }
+              this.close()
+              this.activeName = 'all'
+              this.$router.push({name:'all'})
+              location.reload()
+            })
+          }else{
+            this.$message.warning('请输入合法的时间段！(开始时间应早于迟到时间，迟到时间应早于结束时间)')
+          }
         }
       });
     },
     handleClick(tab, event) {
+      sessionStorage.setItem('sign-activeName',tab.name)
       this.$router.push({name:tab.name})
     },
     close(){
@@ -122,7 +136,10 @@ export default {
       this.$nextTick(() => {
         this.$refs["form"].resetFields();
       });
-    },
+    }
+  },
+  destroyed: function () {
+    sessionStorage.removeItem('sign-activeName')
   }
 }
 </script>

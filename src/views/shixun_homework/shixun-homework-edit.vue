@@ -88,6 +88,7 @@
 <script>
 import {mapGetters} from "vuex";
 import tinymce from "@/components/tinymce";
+import {lang} from "@/assets/data";
 export default {
   name: "shixun-homework-edit",
   components:{
@@ -121,14 +122,9 @@ export default {
       yesData: [],
       noData: [],
       display: false,
-      lang:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+      lang1:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
       lang2:[],
-      options: [
-        {value: 0, label: 'C'}, {value: 1, label: 'C++'}, {value: 2, label: 'Pascal'}, {value: 3, label: 'Java'}, {value: 4, label: 'Ruby'},
-        {value: 5, label: 'Bash'}, {value: 6, label: 'Python'}, {value: 7, label: 'PHP'}, {value: 8, label: 'Perl'}, {value: 9, label: 'C#'},
-        {value: 10, label: 'Obj-C'}, {value: 11, label: 'FreeBasic'}, {value: 12, label: 'Scheme'}, {value: 13, label: 'Clang'}, {value: 14, label: 'Clang++'},
-        {value: 15, label: 'Lua'}, {value: 16, label: 'JavaScript'}, {value: 17, label: 'Go'}, {value: 18, label: 'SQL'}, {value: 19, label: 'Fortran'}, {value: 20, label: 'Matlab'}
-      ],
+      options:lang,
       options2:[{value: 0, label: '公开'},{value: 1, label: '私有'}],
       disabled:false,
       disabled2:true,
@@ -155,7 +151,7 @@ export default {
           this.form.end_time = new Date(this.editInfo.end_time)
           let lang_count = 21,lang2 = [],i = 0
           let langs = (~(parseInt(this.editInfo.langmask)))&((1<<lang_count)-1)
-          this.lang.forEach(function (item, index) {
+          this.lang1.forEach(function (item, index) {
             if(langs&(1<<index)){
               lang2[i++] = item
             }
@@ -250,16 +246,24 @@ export default {
       localStorage.removeItem("tinymceContent");
       this.$refs['form'].validate((valid) => {
         if(valid){
-          if(this.form.title===''||this.problem_title.length===0){
-            this.$message.warning('请输入作业标题或题目编号！')
-            return;
-          }
-          this.$store.dispatch('shixunStore/postTrainingEdit',this.form).then(res=>{
-            if(res.code === 200){
-              this.back()
-              this.$message.success('修改实训作业成功!')
+          let date1 = new Date(this.form.start_time)
+          let date2 = new Date(this.form.end_time)
+          if(date1<date2){
+            if(this.form.title===''||this.problem_title.length===0){
+              this.$message.warning('请输入作业标题或题目编号！')
+              return;
             }
-          })
+            this.$store.dispatch('shixunStore/postTrainingEdit',this.form).then(res=>{
+              if(res.code === 200){
+                this.back()
+                this.$message.success('修改实训作业成功!')
+              }else{
+                this.$message.warning(res.msg)
+              }
+            })
+          }else{
+            this.$message.warning('请输入合法的时间段！(开始时间应早于结束时间)')
+          }
         }
       });
     },

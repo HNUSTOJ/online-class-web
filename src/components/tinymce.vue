@@ -26,11 +26,13 @@ export default {
       plugins: 'hr lists code codesample link emoticons image imagetools table preview textcolor',
       setup: function(editor) {
         editor.on('blur', function(e) {
-          //console.log(editor.getContent());
+          console.log(editor.getContent());
           localStorage.setItem('tinymceContent',editor.getContent())
         });
         editor.on('init', function(e) {
-          editor.setContent(localStorage.getItem('editDes'))
+          if(localStorage.getItem('editDes')){
+            editor.setContent(localStorage.getItem('editDes'))
+          }
         });
       },
     });

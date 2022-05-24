@@ -19,7 +19,7 @@ export default function requestProcess (request, requestData = null, okHandle = 
       }
       else{
         if(res.code === -1){
-          console.log(res)
+          //console.log(res)
           message.error(res.msg)
           router.push({name:'Home'})
         }else{

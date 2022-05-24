@@ -142,9 +142,27 @@ const routes = [
       },
       {
         path: 'common_homeworks/:commonId',
-        name: 'common-homework-info',
         component: () => import('../views/common_homework/common-homework-detail'),
-        meta:{title:'普通作业-详情',activeMenu:'/common_homework'},
+        children: [
+          {
+            path: '/',
+            name: 'common-des',
+            component:() => import('../views/common_homework/common-homework-des'),
+            meta:{title:'普通作业',activeMenu:'/common_homework'},
+          },
+          {
+            path: 'sub',
+            name: 'common-sub',
+            component:() => import('../views/common_homework/common-homework-sub'),
+            meta:{title:'普通作业',activeMenu:'/common_homework'},
+          },
+          {
+            path: 'set',
+            name: 'common-set',
+            component:() => import('../views/common_homework/common-homework-set'),
+            meta:{title:'普通作业',activeMenu:'/common_homework'},
+          }
+        ]
       },
       {
         path: 'class_stu',////////////////////////////////////////////////////////////////////////////////////
@@ -232,10 +250,22 @@ const routes = [
         ]
       },
       {
-        path: 'common_homework_stus/:cid',
-        name: 'common-homework-stuInfo',
+        path: 'common_homework_stus/:commonId',
         component: () => import('../views/stu/common_homework/info'),
-        meta:{title:'普通作业-详细',activeMenu:'/common_homework_stu'}
+        children: [
+          {
+            path: '',
+            name:'common-stu-des',
+            component: () => import('../views/stu/common_homework/info-des'),
+            meta:{title:'普通作业-详细',activeMenu:'/common_homework_stu'},
+          },
+          {
+            path: 'sub',
+            name:'common-stu-sub',
+            component: () => import('../views/stu/common_homework/info-sub'),
+            meta:{title:'普通作业-详细',activeMenu:'/common_homework_stu'},
+          }
+        ]
       },
       {
         path: 'code',
@@ -253,7 +283,13 @@ const routes = [
         path:'video',
         name:'video',
         component:() => import('../views/file/Video'),
-        meta:{title:'视频资源'}
+        meta:{title:'视频资源',activeMenu:'/video'}
+      },
+      {
+        path:'videos',
+        name:'video-info',
+        component:() => import('../views/file/Video-info'),
+        meta:{title:'视频资源-播放',activeMenu:'/video'}
       }
     ]
   },

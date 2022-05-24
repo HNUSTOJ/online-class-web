@@ -75,7 +75,7 @@ export default {
       this.query.id = this.$route.params.courseId;
       this.query.page = page;
       this.$store.dispatch('attendanceStore/getAttendanceList', this.query).then(res=>{
-        //console.log(res)
+        console.log(res)
       });
     },
     handleCurrentChange(pageNum){

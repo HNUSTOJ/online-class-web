@@ -97,7 +97,8 @@ export default {
       this.load(1,this.input2)
     },
     open(item){
-      this.$router.push({name:'shixun-homework-info',params:{contestId:item.contest_id},query:{info:JSON.stringify(item)}})
+      sessionStorage.setItem('shixunInfo',JSON.stringify(item))
+      this.$router.push({name:'shixun-homework-info',params:{contestId:item.contest_id}})
     },
     edit(id){
       this.$router.push({name:'shixun-homework-edit',params:{contestId:id}})
