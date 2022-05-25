@@ -5,7 +5,7 @@
         <el-card shadow="hover" style="cursor: pointer;margin: 10px 0">
           <div style="float: left;margin: 10px 0;width: 70%">
             <div>
-              <el-button type="text" @click="openCard(item.job_id)" style="font-size: 15px">{{ item.title }}</el-button>
+              <el-button type="text" @click="openCard(item)" style="font-size: 15px">{{ item.title }}</el-button>
               <el-tag v-if="compare(item.create_time,currentTime)">准备</el-tag>
               <el-tag type="success" v-if="compare(currentTime,item.create_time)&&compare(item.end_time,currentTime)">进行中</el-tag>
               <el-tag type="danger" v-if="compare(currentTime,item.end_time)">已结束</el-tag>
@@ -66,8 +66,14 @@ export default {
          //console.log(res)
       })
     },
-    openCard(id){
-      this.$router.push({ name: 'common-stu-des', params:{commonId:id} })
+    openCard(item){
+      if(this.compare(item.create_time,this.currentTime)){
+        this.$message.warning('该作业还未开始！')
+      }else{
+        sessionStorage.setItem('common_title',item.title)
+        sessionStorage.setItem('common_end_time',item.end_time)
+        this.$router.push({ name: 'common-stu-des', params:{commonId:item.job_id} })
+      }
     },
     handleCurrentChange(pageNum){
       this.pageNum=pageNum

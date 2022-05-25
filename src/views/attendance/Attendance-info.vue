@@ -88,6 +88,7 @@ export default {
   },
   methods:{
     goBack() {
+      //history.go(-1)
       this.$router.push({name: sessionStorage.getItem('sign-activeName')})
     },
     load(page,state){

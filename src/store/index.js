@@ -8,6 +8,7 @@ import shixunStore from './modules/shixun'
 import fileStore from './modules/file'
 import commonStore from './modules/common'
 import videoStore from './modules/video'
+import adminStore from './modules/admin'
 
 Vue.use(Vuex)
 
@@ -27,6 +28,7 @@ export default new Vuex.Store({
         shixunStore,
         fileStore,
         commonStore,
-        videoStore
+        videoStore,
+        adminStore
     }
 })

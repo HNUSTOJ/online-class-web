@@ -45,9 +45,10 @@ export default {
   },
   methods: {
     changeMovie () {
+      sessionStorage.setItem('videoUrl',this.item.url)
       let source=encodeURIComponent(this.item.url)
       let title=this.item.name
-      this.$router.push({name:'video-info',query:{title:title,source:source,type:this.item.type}})
+      this.$router.push({name:'video-info',query:{title:title,source:source,type:this.item.type,private:this.item.private}})
     },
     handleRemoveClick(url) {//删除文件
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {

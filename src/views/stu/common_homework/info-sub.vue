@@ -1,7 +1,7 @@
 <template>
 <div>
   <div style="margin-top: 15px">
-    <span>剩余提交时间5 天 23 小时 36 分 </span>
+    <span>{{this.time}}</span>
   </div>
   <div style="margin: 15px 0">
     <el-table :data="list" border stripe :header-cell-class-name="headerBg" style="font-size: 14px">
@@ -33,6 +33,7 @@
 
 <script>
 import {mapGetters} from "vuex";
+import moment from "moment";
 
 export default {
   name: "info-sub",
@@ -45,12 +46,44 @@ export default {
     return{
       headerBg: 'headerBg',
       query:{},
+      endTime: moment(sessionStorage.getItem('common_end_time')).format('YYYY-MM-DD HH:mm:ss'),
+      currentTime: moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+      time:''
     }
   },
   created() {
     this.load()
   },
+  mounted() {
+    this.currentTimes();
+  },
   methods:{
+    currentTimes() {
+      this.time = this.difference(this.currentTime,this.endTime)
+      const timer = setInterval(this.formatDate, 1000);
+      this.$once('hook:beforeDestroy',()=>{
+        clearInterval(timer);
+      })
+    },
+    formatDate(){
+      this.currentTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+      this.time = this.difference(this.currentTime,this.endTime)
+    },
+    difference(beginTime, endTime) {
+      let dateBegin = new Date(beginTime);
+      let dateEnd = new Date(endTime);
+      let dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
+      let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+      let leave1 = dateDiff % (24 * 3600 * 1000);    //计算天数后剩余的毫秒数
+      let hours = Math.floor(leave1 / (3600 * 1000));//计算出小时数
+      //计算相差分钟数
+      let leave2 = leave1 % (3600 * 1000);   //计算小时数后剩余的毫秒数
+      let minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
+      //计算相差秒数
+      let leave3 = leave2 % (60 * 1000);     //计算分钟数后剩余的毫秒数
+      let seconds = Math.round(leave3 / 1000);
+      return "剩余提交时间" + dayDiff + "天" + hours + "小时" + minutes + "分钟" + seconds + "秒";
+    },
     load(){
       this.query.job_id = this.$route.params.commonId
       this.query.page = 1

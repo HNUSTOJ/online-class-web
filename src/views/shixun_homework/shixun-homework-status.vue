@@ -41,6 +41,9 @@
             :total="total">
         </el-pagination>
       </el-col>
+      <el-col :span="8">
+        <el-button icon="el-icon-refresh" @click="fresh"></el-button>
+      </el-col>
     </el-row>
     <el-table :data="problemStatus" stripe style="margin-top:10px">
       <el-table-column prop="solution_id" label="题交编号" align="center"></el-table-column>
@@ -130,10 +133,13 @@ export default {
           return;
         }
       });
-      console.log(query)
+      //console.log(query)
       this.$store.dispatch('shixunStore/getTrainingSearchStatus',query).then(res=>{
-        console.log(res)
+        //console.log(res)
       })
+    },
+    fresh(){
+      this.load(1)
     },
     search(){
       this.pageNum = 1

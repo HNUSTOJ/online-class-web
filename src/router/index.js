@@ -120,7 +120,7 @@ const routes = [
             meta:{title:'实训作业-问题',activeMenu:'/shixun_homework'}
           },
           {
-            path: 'problem/submit',
+            path: 'problem/:problemId/submit',
             name: 'shixun-homework-submit',
             component: () => import('../views/shixun_homework/shixun-homework-submit'),
             meta:{title:'实训作业-提交',activeMenu:'/shixun_homework'}

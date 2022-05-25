@@ -208,6 +208,7 @@ export default {
               this.$message.warning('请输入作业标题或题目编号！')
               return;
             }
+            //console.log(this.form)
             this.$store.dispatch('shixunStore/postTrainingCreate',this.form).then(res=>{
               if(res.code === 200){
                 this.back()

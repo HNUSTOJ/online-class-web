@@ -137,10 +137,10 @@ export default {
         this.$refs["form"].resetFields();
       });
     }
-  },
-  destroyed: function () {
-    sessionStorage.removeItem('sign-activeName')
   }
+  // destroyed: function () {
+  //   sessionStorage.removeItem('sign-activeName')
+  // }
 }
 </script>
 

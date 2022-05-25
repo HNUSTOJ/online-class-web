@@ -2,15 +2,13 @@
   <div class="container-div">
     <div>
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="'/'">首 页</el-breadcrumb-item>
+        <el-breadcrumb-item v-if="permissions!=='2'">首 页</el-breadcrumb-item>
+        <el-breadcrumb-item v-if="permissions==='2'">管理员账号</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
     <div>
-      <el-image
-          style="width: 30px; height: 30px;display:inline-block;vertical-align:-8px;margin-right: 6px;"
-          :src="require('../assets/logo.png')"
-          fit="fill"></el-image>
+      <el-image style="width: 30px; height: 30px;display:inline-block;vertical-align:-8px;margin-right: 6px;" :src="require('../assets/logo.png')" fit="fill"></el-image>
       <span class="container-span">基于HNUSTOJ的在线实训课堂</span>
     </div>
 
@@ -43,7 +41,8 @@ export default {
   computed:{
     ...mapGetters({
       username:'loginStore/username',
-      isLogin:'loginStore/isLogin'
+      isLogin:'loginStore/isLogin',
+      permissions:'loginStore/permissions'
     })
   },
   methods: {

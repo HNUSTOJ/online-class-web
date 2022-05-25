@@ -188,7 +188,7 @@ export default {
       this.loading2 = true
       let fileObj = param.file // 相当于input里取得的files
       const size = fileObj.size/1024/1024
-      if(size>150){
+      if(size>50){
         this.$notify.warning({
           title:'警告',
           message:'大小必须小于50M'
@@ -239,29 +239,29 @@ export default {
       if(item.type.toLowerCase() === 'pdf'){
         this.pdf.pdfDialog = true
         let loadingTask = pdf.createLoadingTask({
-          url:'http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url),
+          url:'http://192.168.0.123:8848/file/download?url='+encodeURIComponent(item.url),
           httpHeaders:{'token':localStorage.getItem('token')}
         })
         this.pdf.url = loadingTask
       }else if(item.type.toLowerCase() === 'xls'||item.type.toLowerCase() === 'xlsx'){
         this.excel.dialog =true
         this.$nextTick(()=>{
-          this.$refs.excelChild.excel('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url));
+          this.$refs.excelChild.excel('http://192.168.0.123:8848/file/download?url='+encodeURIComponent(item.url));
         })
       }else if(item.type.toLowerCase() === 'docx'||item.type.toLowerCase() === 'doc'){
         this.word.dialog = true
         this.$nextTick(()=>{
-          this.$refs.wordChild.word('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url));
+          this.$refs.wordChild.word('http://192.168.0.123:8848/file/download?url='+encodeURIComponent(item.url));
         })
       }else if(item.type.toLowerCase()==='jpg'||item.type.toLowerCase()==='jpeg'||item.type.toLowerCase()==='png'){
-        let url = this.imgSrc('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url))
+        let url = this.imgSrc('http://192.168.0.123:8848/file/download?url='+encodeURIComponent(item.url))
         url.then(res =>{///////////////////获取promise对象中的value
           this.onPreview(res)
         } )
       }else if(item.type.toLowerCase()==='pptx'){
         this.pptx.dialog = true
         this.$nextTick(()=>{
-          this.$refs.pptxChild.pptx('http://152.136.122.135:8848/file/download?url='+encodeURIComponent(item.url));
+          this.$refs.pptxChild.pptx('http://192.168.0.123:8848/file/download?url='+encodeURIComponent(item.url));
         })
       }
     },

@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <div style="margin-bottom: 20px">
-      <el-page-header @back="goBack" content="作业详情"></el-page-header>
+      <el-page-header @back="goBack" :content="title"></el-page-header>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="作业描述" name="common-stu-des"></el-tab-pane>
@@ -18,7 +18,8 @@ export default {
   name: "info",
   data(){
     return{
-      activeName:sessionStorage.getItem('common-info-activeName')
+      activeName:sessionStorage.getItem('common-info-activeName'),
+      title:sessionStorage.getItem('common_title')
     }
   },
   created() {

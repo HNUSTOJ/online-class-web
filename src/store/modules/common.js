@@ -1,8 +1,8 @@
 import requestProcess from "@/utils/request-process";
 import {
-    getCommonClass,
+    getCommonClass, getCommonExport,
     getCommonInfo,
-    getCommonList, getCommonSubmitInfo, getFileDownload, getFileDownloadJob,
+    getCommonList, getCommonListEnd, getCommonListIng, getCommonSubmitInfo, getFileDownload, getFileDownloadJob,
     postCommonCreate, postCommonDelete, postCommonEdit, postCommonUpload
 } from "@/api/index";
 
@@ -95,6 +95,16 @@ const actions = {
             commit("setCommonList", res)
         );
     },
+    getCommonListIng ({ commit }, data){
+        return requestProcess(getCommonListIng, data, res =>
+            commit("setCommonList", res)
+        );
+    },
+    getCommonListEnd ({ commit }, data){
+        return requestProcess(getCommonListEnd, data, res =>
+            commit("setCommonList", res)
+        );
+    },
     getCommonInfo ({ commit }, data){
         return requestProcess(getCommonInfo, data, res =>
             commit("setJobContent", res)
@@ -112,6 +122,9 @@ const actions = {
     },
     getFileDownloadJob ({ commit }, data){
         return requestProcess(getFileDownloadJob, data, ()=>{});
+    },
+    getCommonExport ({ commit }, data){
+        return requestProcess(getCommonExport, data, ()=>{});
     },
     postCommonCreate ({ commit }, data){
         return requestProcess(postCommonCreate, data, ()=>{});

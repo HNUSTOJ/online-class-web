@@ -3,9 +3,9 @@ import {
     getTrainingContestInfo,
     getTrainingContestList, getTrainingContestListEnd, getTrainingContestListIng,
     getTrainingEditInfo, getTrainingProblem,
-    getTrainingProblemTitle, getTrainingSearchStatus,
+    getTrainingProblemTitle, getTrainingSearchStatus, getTrainingSubmitLanguage,
     postTrainingCreate, postTrainingDelete,
-    postTrainingEdit
+    postTrainingEdit, postTrainingSubmit
 } from "@/api/index";
 
 //state存储
@@ -18,6 +18,7 @@ const state = () => ({
     problem:{},
     problemStatus:[],
     problemStatusTotal:0,
+    langmask:0
 })
 
 //state获取
@@ -45,6 +46,9 @@ const getters = {
     },
     problemStatusTotal(state){
         return state.problemStatusTotal;
+    },
+    langmask(state){
+        return state.langmask
     }
 }
 
@@ -96,6 +100,13 @@ const mutations = {
             state.problemStatus = []
             state.problemStatusTotal = 0
         }
+    },
+    setLangMask(state,data){
+        if(data.code===200){
+            state.langmask = data.langmask
+        }else{
+            state.langmask = 0
+        }
     }
 }
 
@@ -140,6 +151,11 @@ const actions = {
             commit("setProblemStatus", res)
         );
     },
+    getTrainingSubmitLanguage ({ commit }, data){
+        return requestProcess(getTrainingSubmitLanguage, data, res =>
+            commit("setLangMask", res)
+        );
+    },
     postTrainingCreate ({ commit }, data){
         return requestProcess(postTrainingCreate, data, ()=>{});
     },
@@ -148,6 +164,9 @@ const actions = {
     },
     postTrainingDelete ({ commit }, data){
         return requestProcess(postTrainingDelete, data, ()=>{});
+    },
+    postTrainingSubmit ({ commit }, data){
+        return requestProcess(postTrainingSubmit, data, ()=>{});
     },
 }
 

@@ -2,8 +2,8 @@
   <div class="footer">
     <div style="border-top:1px #1F1F1F solid;">
       <p class="alt" style="color:#999; line-height:0;text-align: center">
-        &copy; 版权所有：**** &nbsp;<span>技术支持：</span>
-        <a href="" target="_blank" style="color:#999;">*****</a>
+        &copy; 版权所有：湖南科技大学 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>技术支持：向德生老师</span>
+        <a href="" target="_blank" style="color:#999;"></a>
       </p>
     </div>
   </div>

@@ -19,7 +19,8 @@ export default {
   },
   computed:{
     ...mapGetters({
-      problem:'shixunStore/problem'
+      problem:'shixunStore/problem',
+      langmask:'shixunStore/langmask'
     })
   },
   created() {
@@ -27,10 +28,22 @@ export default {
   },
   methods:{
     load(){
-      this.$store.dispatch('shixunStore/getTrainingProblem',{id:parseInt(this.$route.params.problemId)}).then(res=>{})
+      this.$store.dispatch('shixunStore/getTrainingProblem',{id:parseInt(this.$route.params.problemId),contest_id:parseInt(this.$route.params.contestId)}).then(res=>{
+        if(res.code===-4){
+          this.$router.push({name:'shixun-homework-info'})
+          this.$message.error('题目未在该实训作业内部！')
+        }
+      })
     },
     submit(){
-      this.$router.push({name:'shixun-homework-submit'})
+      // this.$router.push({name:'shixun-homework-submit',params:{problemId:this.$route.params.problemId}})
+      this.$store.dispatch('shixunStore/getTrainingSubmitLanguage',{contest_id:this.$route.params.contestId}).then(res=>{
+        if(res.code===200){
+          this.$router.push({name:'shixun-homework-submit',query:{num:this.$route.query.num,title:this.problem.title,langmask:JSON.stringify(this.langmask)}})
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
     }
   }
 }

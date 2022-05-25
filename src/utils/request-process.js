@@ -20,8 +20,9 @@ export default function requestProcess (request, requestData = null, okHandle = 
       else{
         if(res.code === -1){
           //console.log(res)
-          message.error(res.msg)
-          router.push({name:'Home'})
+          router.push({name:'Home'}).then(res=>{
+            message.error(res.msg)
+          })
         }else{
           okHandle(res)// 请求成功执行的操作
           resolve(res)// 请求成功的回调

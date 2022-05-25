@@ -23,8 +23,8 @@
     <el-button style="margin-left: 10px;" size="small" type="success" @click="submit" v-if="list[0].judge===0">上传文件</el-button>
   </el-upload>
   <span style="font-size: 12px" v-if="list[0].state===0">(单个文件最大50MB)</span>
-  <span style="font-size: 12px"v-if="list[0].state===1&&list[0].judge===0">(继续上传将会覆盖已上传的文件。)</span>
-  <span style="font-size: 12px"v-if="list[0].state===0&&list[0].judge===1">(老师已批阅，请勿再次上传。)</span>
+  <span style="font-size: 12px" v-if="list[0].state===1&&list[0].judge===0">(继续上传将会覆盖已上传的文件。)</span>
+  <span style="font-size: 12px" v-if="list[0].state===1&&list[0].judge===1">(老师已批阅，请勿再次上传。)</span>
 </div>
 </template>
 
@@ -47,7 +47,6 @@ export default {
     }
   },
   created() {
-
     this.$store.dispatch('commonStore/getCommonInfo',{job_id:parseInt(this.$route.params.commonId)}).then(res=>{
       this.load()
     })
@@ -93,9 +92,9 @@ export default {
       })
     },
     download(url){
-      console.log(url)
+      //console.log(url)
       this.$message.success('正在下载文件，请稍等。')
-      this.$store.dispatch('fileStore/getFileDownload',{url:encodeURIComponent(url)}).then(res=>{
+      this.$store.dispatch('commonStore/getFileDownloadJob',{url:url}).then(res=>{
         const link=document.createElement('a');
         try{
           let blob =  res

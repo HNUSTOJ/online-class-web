@@ -55,7 +55,7 @@
 
 
 
-    <el-dialog title="发布作业" :visible.sync="dialogFormVisible" width="40%" :before-close="close">
+    <el-dialog title="编辑作业" :visible.sync="dialogFormVisible" width="40%" :before-close="close">
       <el-form label-width="90px" size="small" :model="form" ref="form" :rules="rules">
         <el-form-item label="发布时间:" prop="start_time">
           <el-date-picker v-model="form.start_time" type="datetime" placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss" :disabled="disabled2"></el-date-picker>
@@ -89,6 +89,7 @@
 import {mapGetters} from "vuex";
 import tinymce from "@/components/tinymce";
 import {lang} from "@/assets/data";
+import moment from "moment";
 export default {
   name: "shixun-homework-edit",
   components:{
@@ -207,7 +208,7 @@ export default {
     },
     inputBlur(){
       this.problem_list = this.problem.split(',')
-      console.log(this.problem_list)
+      //console.log(this.problem_list)
       this.$store.dispatch('shixunStore/getProblemTitle',{problem_id:this.problem_list}).then(res=>{
         if(res.code === -4){
           this.$message.warning(res.msg)
@@ -253,6 +254,10 @@ export default {
               this.$message.warning('请输入作业标题或题目编号！')
               return;
             }
+            //console.log(this.form)
+            this.form.start_time = moment(this.form.start_time).format('YYYY-MM-DD HH:mm:ss')
+            this.form.end_time = moment(this.form.end_time).format('YYYY-MM-DD HH:mm:ss')
+            console.log(this.form)
             this.$store.dispatch('shixunStore/postTrainingEdit',this.form).then(res=>{
               if(res.code === 200){
                 this.back()

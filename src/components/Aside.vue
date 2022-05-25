@@ -73,10 +73,10 @@
       <i class="el-icon-film"></i>
       <span slot="title">视频资源</span>
     </el-menu-item>
-    <el-menu-item :index="`/course/${id}/code`" v-if="permissions === role.isTeacher">
-      <i class="el-icon-pie-chart"></i>
-      <span slot="title">竞赛代码</span>
-    </el-menu-item>
+<!--    <el-menu-item :index="`/course/${id}/code`" v-if="permissions === role.isTeacher">-->
+<!--      <i class="el-icon-pie-chart"></i>-->
+<!--      <span slot="title">竞赛代码</span>-->
+<!--    </el-menu-item>-->
   </el-menu>
 </template>
 

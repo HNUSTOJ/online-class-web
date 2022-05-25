@@ -71,8 +71,13 @@ export default {
           this.jsMd5();
           this.$store.dispatch('loginStore/postLogin',this.loginForm).then(res=>{
             if(res.code === 200){
-              location.reload()
-              this.$message.success(res.msg)
+              if(res.data.permissions==='2'){
+                this.$router.push({name:'admin'}).then(res=>{
+                  location.reload()
+                })
+              }else{
+                location.reload()
+              }
             }else{
               this.$message.error(res.msg)
             }

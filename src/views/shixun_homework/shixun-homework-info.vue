@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column label="标题" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="openProblem(scope.row.problem_id)">{{ scope.row.title }}</el-button>
+          <el-button type="text" @click="openProblem(scope.row.problem_id,scope.row.num)">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="source" label="来源/分类" align="center"></el-table-column>
@@ -66,11 +66,6 @@ export default {
   mounted() {
     this.currentTimes();
   },
-  beforeDestroy() {
-    if (this.formatDate) {
-      clearInterval(this.formatDate); // 在Vue实例销毁前，清除时间定时器
-    }
-  },
   created() {
     this.contest = JSON.parse(sessionStorage.getItem('shixunInfo'))
     this.contest.start_time = moment(new Date(this.contest.start_time)).format('YYYY-MM-DD HH:mm:ss')
@@ -79,7 +74,10 @@ export default {
   },
   methods: {
     currentTimes() {
-      setInterval(this.formatDate, 1000);
+      const timer = setInterval(this.formatDate, 1000);
+      this.$once('hook:beforeDestroy',()=>{
+        clearInterval(timer);
+      })
     },
     formatDate(){
       this.currentTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss')
@@ -93,10 +91,11 @@ export default {
           _this.pNum.push({num,id})
         });
         localStorage.setItem('pNum',JSON.stringify(_this.pNum))
+        console.log(res)
       })
     },
-    openProblem(id){
-      this.$router.push({name:'shixun-homework-problem',params:{problemId:id}})
+    openProblem(id,num){
+      this.$router.push({name:'shixun-homework-problem',params:{problemId:id},query:{num:num}})
     },
     compare(date1,date2) {
       let dates1 = new Date(date1);

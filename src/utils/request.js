@@ -51,7 +51,8 @@ import qs from "qs";
 export default async function request (url, data, type) {
     // 创建axios请求 携带session
     const service = axios.create({
-        baseURL:'http://152.136.122.135:8848/',
+        //baseURL:'http://152.136.122.135:8848/',
+        baseURL:'http://192.168.0.123:8848/',
         //baseURL:'http://127.0.0.1:4523/mock/785490/',
         withCredentials: false
     })

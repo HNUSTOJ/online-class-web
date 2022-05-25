@@ -4,7 +4,7 @@
     <el-input style="width: 300px" placeholder="请输入文件名" v-model="input">
       <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
     </el-input>
-    <el-button icon="el-icon-plus" style="margin-left: 5px" @click="upload"></el-button>
+    <el-button icon="el-icon-plus" style="margin-left: 5px" @click="upload" v-if="permissions==='1'"></el-button>
   </div>
   <el-card>
 
@@ -73,7 +73,8 @@ export default {
   computed:{
     ...mapGetters({
       list:'videoStore/videoList',
-      total:'videoStore/videoTotal'
+      total:'videoStore/videoTotal',
+      permissions:'loginStore/permissions'
     })
   },
   data(){

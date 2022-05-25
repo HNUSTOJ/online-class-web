@@ -1,6 +1,6 @@
 <template>
   <div>
-    <slot name="title"><h1>问题：{{ $route.params.problemId }}:  {{ problem.title }}</h1></slot>
+    <slot name="title"><h1>问题{{ $route.params.problemId }}:  {{ problem.title }}</h1></slot>
     <h5>时间限制:{{ problem.time_limit }}MS&nbsp;&nbsp;内存限制:{{ problem.memory_limit }}KB</h5>
     <h5>提交:{{ problem.submit }}&nbsp;&nbsp;解决:{{ problem.accepted }}</h5>
     <h2 class="text-primary">Description</h2>

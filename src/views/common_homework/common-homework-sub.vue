@@ -10,11 +10,11 @@
       <el-select v-model="state" placeholder="请选择状态" style="margin-left: 5px" @change="Change">
         <el-option v-for="item in stateData" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
-      <el-button type="primary" style="margin-left: 20px">一键导出</el-button>
+      <el-button type="primary" style="margin-left: 20px" @click="exports">一键导出</el-button>
       <span style="font-size: 12px">(选中一键导出)</span>
     </div>
     <div style="margin-top: 15px">
-      <el-table :data="list" border stripe :header-cell-class-name="headerBg">
+      <el-table :data="list" border stripe :header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
         <el-table-column prop="user_id" label="序号"  type="selection" width="100" align="center"></el-table-column>
         <el-table-column prop="user_name" label="姓名" width="150" align="center"></el-table-column>
         <el-table-column prop="user_id" label="学号" align="center"></el-table-column>
@@ -39,7 +39,7 @@
         </el-table-column>
         <el-table-column label="操作" width="165" align="center">
           <template slot-scope="scope">
-            <el-button type="text" @click="download(scope.row.state)">导出</el-button>
+            <el-button type="text" @click="exportOne(scope.row)">导出</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -82,7 +82,9 @@ export default {
       stateData: [
         {id: -1,name:'全部状态'}, {id: 1,name:'已提交'}, {id: 0,name:'未提交'},
       ],
-      query:{}
+      query:{},
+      user_id:[],
+      choose:0
     }
   },
   created() {
@@ -121,12 +123,61 @@ export default {
         this.load(pageNum,this.grade2,this.state2)
       }
     },
-    download(state){
-      if(state===1){
-        this.$message.success('该同学已提交报告。')
+    exportOne(item){
+      this.user_id = []
+      if(item.state===1){
+        this.user_id.push(item.user_id)
+        this.sendDownload()
       }else{
         this.$message.warning('该同学还未提交报告。')
       }
+    },
+    exports(){
+      if(this.choose){
+        this.sendDownload()
+      }else{
+        this.$message.warning('当前为选中任何学生！')
+      }
+    },
+    handleSelectionChange(val){
+      this.choose = val.length
+      this.user_id = []
+      val.forEach((item,i)=>{
+        if(item.state===1){
+          this.user_id.push(item.user_id)
+        }
+      })
+      //console.log(this.user_id)
+    },
+    sendDownload(){
+      this.$store.dispatch('commonStore/getCommonExport',{job_id:this.$route.params.commonId,user_id:this.user_id}).then(res=>{
+        if(res.code===200){
+          res.url.forEach((item,i)=>{
+            this.download(item)
+          })
+        }else{
+          this.$message.error(res.msg)
+        }
+        this.handleCurrentChange(this.pageNum)
+      })
+    },
+    download(url){
+      this.$store.dispatch('commonStore/getFileDownloadJob',{url:url}).then(res=>{
+        const link=document.createElement('a');
+        try{
+          let blob =  res
+          let _fileName = url.substr(url.lastIndexOf('/')+1,url.length)
+          link.style.display='none';
+          // 兼容不同浏览器的URL对象
+          const urls = window.URL || window.webkitURL || window.moxURL;
+          link.href=urls.createObjectURL(blob);
+          link.download = _fileName;
+          link.click();
+          window.URL.revokeObjectURL(urls);
+        }catch (e) {
+          this.$message.error('下载文件出错,'+e)
+        }
+      })
     }
   }
 }

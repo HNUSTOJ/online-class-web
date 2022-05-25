@@ -24,6 +24,9 @@ const File = 'file/'
 //视频资源路径
 const Video = 'video/'
 
+//权限管理
+const Admin = 'admin/'
+
 
 //登录接口
 export function postLogin(data){
@@ -230,12 +233,17 @@ export function getTrainingContestInfo(data){
 
 //获取实训的问题
 export function getTrainingProblem(data){
-    return request(Training + 'problem', {problem_id:data.id}, "get")
+    return request(Training + 'problem', {problem_id:data.id,contest_id:data.contest_id}, "get")
 }
 
 //获取实训作业提交状态（搜索）
 export function getTrainingSearchStatus(data){
     return request(Training + 'search/status', data, "get")
+}
+
+//获取提交代码language
+export function getTrainingSubmitLanguage(data){
+    return request(Training+'submit/language',data,"get")
 }
 
 //创建实训作业
@@ -253,10 +261,25 @@ export function postTrainingDelete(data){
     return request(Training + 'delete', {contest_id:data.id}, "post")
 }
 
+//提交实训代码
+export function postTrainingSubmit(data){
+    return request(Training+'submit',data,"form")
+}
+
 //普通作业
 //获取全部普通作业（搜索）
 export function getCommonList(data){
     return request(Common + 'list', data, "get")
+}
+
+//获取全部进行中的普通作业
+export function getCommonListIng(data){
+    return request(Common +'list/ing',data,"get")
+}
+
+//获取全部历史普通作业
+export function getCommonListEnd(data){
+    return  request(Common+'list/end',data,"get")
 }
 
 //获取普通作业详情
@@ -294,6 +317,11 @@ export function postCommonUpload(data){
     return request(File + 'common/upload', {course_id:data.course_id,job_id:data.job_id,file:data.file}, "file")
 }
 
+//导出学生提交报告
+export function getCommonExport(data){
+    return request(Common+'export',data,"get")
+}
+
 //文件资源
 //文件资源上传
 export function postFileUploadOne(data){
@@ -327,8 +355,16 @@ export function getVideoList(data){
     return request(Video + 'list',data,"get")
 }
 
+//权限管理
+//获取权限管理首页
+export function getAdminList(data){
+    return request(Admin + 'list',data,"get")
+}
 
-
+//修改权限管理
+export function postAdminEdit(data){
+    return request(Admin + 'edit',data,"form")
+}
 
 
 
